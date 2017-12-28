@@ -1,5 +1,7 @@
 package com.example.joshmitchell.noteapp;
 
+import android.app.Activity;
+import android.content.Context;
 import android.icu.text.DateFormat;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -7,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -24,6 +27,12 @@ public class ViewNoteFragment extends Fragment {
 
     public static final String EXTRA_NOTE_ID = "com.example.joshmitchell.noteapp.note_id";
 
+    OnEditSelectedListener mCallback;
+
+    public interface OnEditSelectedListener {
+        public void onEditSelected(UUID noteId);
+    }
+
     public static ViewNoteFragment newInstance(UUID noteId) {
         Bundle args = new Bundle();
 
@@ -33,6 +42,19 @@ public class ViewNoteFragment extends Fragment {
         fragment.setArguments(args);
 
         return fragment;
+    }
+
+    @Override
+    public void onAttach(Context context){
+        super.onAttach(context);
+
+        try {
+            mCallback = (OnEditSelectedListener) context;
+        } catch (ClassCastException e){
+            throw new ClassCastException(context.toString()
+                    + "must implement onEditSelectedListener");
+        }
+
     }
 
     @Override
@@ -49,6 +71,19 @@ public class ViewNoteFragment extends Fragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater){
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.fragment_note_view, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item){
+        switch (item.getItemId()){
+            case R.id.edit_note:
+                //Send event to host activity
+                mCallback.onEditSelected(mNote.getId());
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     @Override

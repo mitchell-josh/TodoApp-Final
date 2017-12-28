@@ -20,13 +20,13 @@ public class EditNoteFragment extends Fragment {
     private Note mNote;
     private EditText mTitleField;
 
-    public static final String EXTRA_CRIME_ID =
+    public static final String EXTRA_NOTE_ID =
             "com.example.joshmitchell.noteapp.crime_id";
 
     public static EditNoteFragment newInstance(UUID noteId){
         Bundle args = new Bundle();
 
-        args.putSerializable(EXTRA_CRIME_ID, noteId);
+        args.putSerializable(EXTRA_NOTE_ID, noteId);
 
         EditNoteFragment fragment = new EditNoteFragment();
         fragment.setArguments(args);
@@ -38,7 +38,7 @@ public class EditNoteFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        UUID noteId = (UUID) getArguments().getSerializable(EXTRA_CRIME_ID);
+        UUID noteId = (UUID) getArguments().getSerializable(EXTRA_NOTE_ID);
         mNote = NoteModel.get(getActivity()).getTextNote(noteId);
     }
 
