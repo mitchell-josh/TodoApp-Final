@@ -12,4 +12,13 @@
         android:hint="@string/textnote_title_hint"/>
 
 
+    <EditText
+        android:id="@+id/textnote_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="top"
+        android:hint="Enter content for the text note"
+        android:inputType="textMultiLine" />
+
+
 </LinearLayout>

@@ -15,7 +15,7 @@ import java.util.UUID;
  * Created by Josh Mitchell on 27/12/2017.
  */
 
-public class TextNoteFragment extends Fragment {
+public class EditNoteFragment extends Fragment {
 
     private Note mNote;
     private EditText mTitleField;
@@ -23,12 +23,12 @@ public class TextNoteFragment extends Fragment {
     public static final String EXTRA_CRIME_ID =
             "com.example.joshmitchell.noteapp.crime_id";
 
-    public static TextNoteFragment newInstance(UUID noteId){
+    public static EditNoteFragment newInstance(UUID noteId){
         Bundle args = new Bundle();
 
         args.putSerializable(EXTRA_CRIME_ID, noteId);
 
-        TextNoteFragment fragment = new TextNoteFragment();
+        EditNoteFragment fragment = new EditNoteFragment();
         fragment.setArguments(args);
 
         return fragment;
