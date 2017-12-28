@@ -25,6 +25,7 @@ public class ViewNoteFragment extends Fragment {
 
     private Note mNote;
     private TextView mTitleField, mDateField, mDateDetailField, mContentField;
+    private int mCheckId, mUncheckId;
 
     public static final String EXTRA_NOTE_ID = "com.example.joshmitchell.noteapp.note_id";
 
@@ -55,21 +56,49 @@ public class ViewNoteFragment extends Fragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater){
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.fragment_note_view, menu);
+
+        MenuItem checkedItem = menu.findItem(R.id.checked);
+        mCheckId = checkedItem.getItemId();
+
+        MenuItem uncheckedItem = menu.findItem(R.id.unchecked);
+        mUncheckId = uncheckedItem.getItemId();
+
+        //Initial conditional checks for check/uncheck box
+        if(mNote.getArchived() == false) {
+            uncheckedItem.setVisible(false);
+            checkedItem.setVisible(true);
+        }
+        if(mNote.getArchived() == true) {
+            checkedItem.setVisible(false);
+            uncheckedItem.setVisible(true);
+        }
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item){
         switch (item.getItemId()){
             case R.id.edit_note:
-                //Send event to host activity
-
                 Intent intent = NoteActivity.newIntent(getActivity(), mNote.getId());
                 startActivity(intent);
 
                 return true;
 
+            case R.id.checked:
+                mNote.setArchived(true);
+                item.setVisible(false);
+                System.out.println(item);
+
+                return true;
+
+            case R.id.unchecked:
+                mNote.setArchived(false);
+                item.setVisible(false);
+
+                return true;
+
             default:
                 return super.onOptionsItemSelected(item);
+
         }
     }
 
