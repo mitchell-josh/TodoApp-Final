@@ -2,6 +2,7 @@ package com.example.joshmitchell.noteapp;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.icu.text.DateFormat;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -23,15 +24,10 @@ import java.util.UUID;
 public class ViewNoteFragment extends Fragment {
 
     private Note mNote;
-    private TextView mTitleField, mDateField, mDateDetailField;
+    private TextView mTitleField, mDateField, mDateDetailField, mContentField;
 
     public static final String EXTRA_NOTE_ID = "com.example.joshmitchell.noteapp.note_id";
 
-    OnEditSelectedListener mCallback;
-
-    public interface OnEditSelectedListener {
-        public void onEditSelected(UUID noteId);
-    }
 
     public static ViewNoteFragment newInstance(UUID noteId) {
         Bundle args = new Bundle();
@@ -44,18 +40,6 @@ public class ViewNoteFragment extends Fragment {
         return fragment;
     }
 
-    @Override
-    public void onAttach(Context context){
-        super.onAttach(context);
-
-        try {
-            mCallback = (OnEditSelectedListener) context;
-        } catch (ClassCastException e){
-            throw new ClassCastException(context.toString()
-                    + "must implement onEditSelectedListener");
-        }
-
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -78,7 +62,10 @@ public class ViewNoteFragment extends Fragment {
         switch (item.getItemId()){
             case R.id.edit_note:
                 //Send event to host activity
-                mCallback.onEditSelected(mNote.getId());
+
+                Intent intent = NoteActivity.newIntent(getActivity(), mNote.getId());
+                startActivity(intent);
+
                 return true;
 
             default:
@@ -99,6 +86,9 @@ public class ViewNoteFragment extends Fragment {
 
         mDateDetailField = v.findViewById(R.id.view_date_detail);
         mDateDetailField.setText(mNote.getDate().toString());
+
+        mContentField = v.findViewById(R.id.view_content);
+        mContentField.setText(mNote.getContent());
 
         return v;
     }

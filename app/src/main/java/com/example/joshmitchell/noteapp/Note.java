@@ -11,6 +11,7 @@ public class Note {
 
     private UUID mId;
     private String mTitle;
+    private String mContent;
     private Date mDate;
     private boolean mArchived;
 
@@ -31,6 +32,7 @@ public class Note {
 
     public void setTitle(String title){
         mTitle = title;
+        mDate = new Date();
     }
 
     public UUID getId(){
@@ -47,6 +49,15 @@ public class Note {
 
     public void setArchived(boolean archived){
         mArchived = archived;
+    }
+
+    public void setContent(String content) {
+        mContent = content;
+        mDate = new Date();
+    }
+
+    public String getContent(){
+        return mContent;
     }
 
 }

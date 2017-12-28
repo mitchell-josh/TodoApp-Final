@@ -49,5 +49,9 @@ public class NoteModel {
         return null;
     }
 
+    public void addNote(Note note){
+        mNotes.add(note);
+    }
+
 
 }

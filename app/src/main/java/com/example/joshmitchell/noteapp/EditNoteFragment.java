@@ -18,7 +18,7 @@ import java.util.UUID;
 public class EditNoteFragment extends Fragment {
 
     private Note mNote;
-    private EditText mTitleField;
+    private EditText mTitleField, mContentField;
 
     public static final String EXTRA_NOTE_ID =
             "com.example.joshmitchell.noteapp.crime_id";
@@ -38,8 +38,9 @@ public class EditNoteFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        UUID noteId = (UUID) getArguments().getSerializable(EXTRA_NOTE_ID);
-        mNote = NoteModel.get(getActivity()).getTextNote(noteId);
+        UUID todoId = (UUID) getActivity()
+                .getIntent().getSerializableExtra(NoteActivity.EXTRA_TODO_ID);
+        mNote = NoteModel.get(getActivity()).getTextNote(todoId);
     }
 
     @Override
@@ -62,6 +63,25 @@ public class EditNoteFragment extends Fragment {
             @Override
             public void afterTextChanged(Editable s) {
                 //Left blank
+            }
+        });
+
+        mContentField = v.findViewById(R.id.textnote_content);
+        mContentField.setText(mNote.getContent());
+        mContentField.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                //left blank
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                mNote.setContent(s.toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
             }
         });
 

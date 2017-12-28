@@ -1,31 +1,28 @@
 package com.example.joshmitchell.noteapp;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 
 import java.util.UUID;
 
-public class NoteActivity extends SingleFragmentActivity implements ViewNoteFragment.OnEditSelectedListener {
+public class NoteActivity extends SingleFragmentActivity{
 
-    public void onEditSelected(UUID noteId){
-        //Do something here
-        EditNoteFragment fragment = new EditNoteFragment();
-        Bundle args = new Bundle();
-        args.putSerializable(EditNoteFragment.EXTRA_NOTE_ID, noteId);
-        fragment.setArguments(args);
+    public static final String EXTRA_TODO_ID = "todo_id";
 
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.fragmentContainer, fragment);
-        transaction.addToBackStack(null);
-        transaction.commit();
+    public static Intent newIntent(Context packageContext, UUID todoId) {
+        Intent intent = new Intent(packageContext, NoteActivity.class);
+        intent.putExtra(EXTRA_TODO_ID, todoId);
+        return intent;
     }
 
     @Override
     protected Fragment createFragment() {
         UUID noteId = (UUID)getIntent()
-                .getSerializableExtra(ViewNoteFragment.EXTRA_NOTE_ID);
+                .getSerializableExtra(EditNoteFragment.EXTRA_NOTE_ID);
 
-        return ViewNoteFragment.newInstance(noteId);
+        return EditNoteFragment.newInstance(noteId);
     }
 }

@@ -1,9 +1,13 @@
 package com.example.joshmitchell.noteapp;
 
+import android.content.Context;
 import android.content.Intent;
 import android.icu.text.DateFormat;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -11,6 +15,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 /**
  * Created by Josh Mitchell on 27/12/2017.
@@ -20,7 +25,24 @@ public class NoteListFragment extends ListFragment {
 
     private ArrayList<Note> mNotes;
 
-    private static final String TAG = "NoteListFragment";
+    OnEditSelectedListener mCallback;
+
+    public interface OnEditSelectedListener {
+        public void onEditSelected(UUID noteId);
+    }
+
+    @Override
+    public void onAttach(Context context){
+        super.onAttach(context);
+
+        try {
+            mCallback = (OnEditSelectedListener) context;
+        } catch (ClassCastException e){
+            throw new ClassCastException(context.toString()
+                    + "must implement onEditSelectedListener");
+        }
+
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -31,6 +53,7 @@ public class NoteListFragment extends ListFragment {
         NoteAdapter adapter = new NoteAdapter(mNotes);
         setListAdapter(adapter);
 
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -40,13 +63,34 @@ public class NoteListFragment extends ListFragment {
     }
 
     @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater){
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.list_item_note, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item){
+        switch (item.getItemId()){
+            case R.id.new_note:
+                Note note = new Note();
+                NoteModel.get(getActivity()).addNote(note);
+
+                Intent intent = NoteActivity.newIntent(getActivity(), note.getId());
+                startActivity(intent);
+
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
     public void onListItemClick(ListView l, View v, int position, long id){
         Note t = ((NoteAdapter)getListAdapter()).getItem(position);
 
         //Start NoteActivity
-        Intent i = new Intent(getActivity(), NoteActivity.class);
-        i.putExtra(ViewNoteFragment.EXTRA_NOTE_ID, t.getId());
-        startActivity(i);
+        mCallback.onEditSelected(t.getId());
     }
 
     private class NoteAdapter extends ArrayAdapter<Note>{

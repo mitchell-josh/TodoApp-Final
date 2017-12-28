@@ -30,7 +30,7 @@
 
 
     <TextView
-        android:id="@+id/textnote_content"
+        android:id="@+id/view_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/view_date"
