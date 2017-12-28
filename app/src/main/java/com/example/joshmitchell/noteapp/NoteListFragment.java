@@ -45,7 +45,7 @@ public class NoteListFragment extends ListFragment {
 
         //Start NoteActivity
         Intent i = new Intent(getActivity(), NoteActivity.class);
-        i.putExtra(EditNoteFragment.EXTRA_CRIME_ID, t.getId());
+        i.putExtra(ViewNoteFragment.EXTRA_NOTE_ID, t.getId());
         startActivity(i);
     }
 

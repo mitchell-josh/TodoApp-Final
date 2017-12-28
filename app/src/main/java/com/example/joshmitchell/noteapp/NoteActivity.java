@@ -9,8 +9,8 @@ public class NoteActivity extends SingleFragmentActivity {
     @Override
     protected Fragment createFragment() {
         UUID noteId = (UUID)getIntent()
-                .getSerializableExtra(EditNoteFragment.EXTRA_CRIME_ID);
+                .getSerializableExtra(ViewNoteFragment.EXTRA_NOTE_ID);
 
-        return EditNoteFragment.newInstance(noteId);
+        return ViewNoteFragment.newInstance(noteId);
     }
 }

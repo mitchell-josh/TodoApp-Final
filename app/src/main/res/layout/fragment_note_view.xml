@@ -5,27 +5,27 @@
     android:layout_height="match_parent">
 
     <TextView
-        android:id="@+id/textnote_title"
+        android:id="@+id/view_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/textnote_title_hint"/>
 
     <TextView
-        android:id="@+id/textnote_dateMMMd"
+        android:id="@+id/view_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/textnote_title"
-        android:layout_alignParentLeft="true"
+        android:layout_below="@id/view_title"
+        android:layout_alignParentStart="true"
         android:hint="Date MMMd"
         />
     
     <TextView
-        android:id="@+id/textnote_date_detail"
+        android:id="@+id/view_date_detail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/textnote_title"
-        android:layout_toRightOf="@id/textnote_dateMMMd"
-        android:layout_alignParentRight="true"
+        android:layout_below="@id/view_title"
+        android:layout_toEndOf="@id/view_date"
+        android:layout_alignParentEnd="true"
         android:hint="Date Detail"/>
 
 
@@ -33,9 +33,9 @@
         android:id="@+id/textnote_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/textnote_dateMMMd"
+        android:layout_below="@id/view_date"
         android:gravity="top"
         android:hint="Enter content for the text note"
-        android:inputType="textMultiLine" />
+        />
 
 </RelativeLayout>
