@@ -15,4 +15,9 @@
         android:title="Check"
         />
 
+    <item
+        android:id="@+id/remove"
+        android:title="Remove"
+        />
+
 </menu>

@@ -53,5 +53,10 @@ public class NoteModel {
         mNotes.add(note);
     }
 
+    public void removeNote(UUID noteId){
+        Note t = getTextNote(noteId);
+        mNotes.remove(t);
+    }
+
 
 }

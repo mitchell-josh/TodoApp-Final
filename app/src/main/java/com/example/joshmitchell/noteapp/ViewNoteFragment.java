@@ -86,6 +86,12 @@ public class ViewNoteFragment extends Fragment {
                 updateMenuUI();
                 return true;
 
+            case R.id.remove:
+                NoteModel.get(getActivity()).removeNote(mNote.getId());
+                Intent i = new Intent(getActivity(), NoteListActivity.class);
+                startActivity(i);
+
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
 
