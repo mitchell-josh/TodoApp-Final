@@ -2,8 +2,6 @@ package com.example.joshmitchell.noteapp;
 
 import android.content.Context;
 
-import com.google.firebase.database.FirebaseDatabase;
-
 import java.util.ArrayList;
 import java.util.UUID;
 
@@ -21,6 +19,14 @@ public class NoteModel {
     private NoteModel(Context appContext){
         mAppContext = appContext;
         mNotes = new ArrayList<Note>();
+
+        //Populate list with predefined data
+        for (int i=0; i < 100; i++){
+            Note t = new Note();
+            t.setTitle("Note #" + i);
+            t.setArchived(i % 2 == 0); //Every other one
+            mNotes.add(t);
+        }
     }
 
     public static NoteModel get(Context c){
