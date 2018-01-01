@@ -9,6 +9,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 import java.util.UUID;
 
 /**
@@ -22,6 +25,8 @@ public class EditNoteFragment extends Fragment {
 
     public static final String EXTRA_NOTE_ID =
             "com.example.joshmitchell.noteapp.crime_id";
+
+    DatabaseReference mDatabase;
 
     public static EditNoteFragment newInstance(UUID noteId){
         Bundle args = new Bundle();
@@ -37,6 +42,8 @@ public class EditNoteFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        mDatabase = FirebaseDatabase.getInstance().getReference();
 
         UUID noteId = (UUID) getActivity()
                 .getIntent().getSerializableExtra(NoteActivity.EXTRA_NOTE_ID);
@@ -62,7 +69,7 @@ public class EditNoteFragment extends Fragment {
 
             @Override
             public void afterTextChanged(Editable s) {
-                //Left blank
+
             }
         });
 
@@ -81,7 +88,7 @@ public class EditNoteFragment extends Fragment {
 
             @Override
             public void afterTextChanged(Editable s) {
-
+                mDatabase.child("notes").child(mNote.getId().toString()).setValue(mNote);
             }
         });
 
