@@ -42,6 +42,12 @@ public class ViewNoteFragment extends Fragment {
         return fragment;
     }
 
+    @Override
+    public void onResume(){
+        super.onResume();
+        UUID noteId = (UUID) getArguments().getSerializable(EXTRA_NOTE_ID);
+        mNote = NoteModel.get(getActivity()).getTextNote(noteId);
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

@@ -12,11 +12,12 @@ import java.util.UUID;
 
 public class NoteListActivity extends SingleFragmentActivity implements NoteListFragment.OnEditSelectedListener{
 
+
     public void onEditSelected(UUID noteId){
         //Do something here
-        ViewNoteFragment fragment = new ViewNoteFragment();
+        ViewPagerFragment fragment = new ViewPagerFragment();
         Bundle args = new Bundle();
-        args.putSerializable(ViewNoteFragment.EXTRA_NOTE_ID, noteId);
+        args.putSerializable(ViewPagerFragment.EXTRA_NOTE_ID, noteId);
         fragment.setArguments(args);
 
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();

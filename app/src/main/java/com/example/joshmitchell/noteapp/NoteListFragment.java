@@ -110,7 +110,7 @@ public class NoteListFragment extends ListFragment {
             Note t = getItem(position);
 
             TextView titleTextView = convertView.findViewById(R.id.note_list_item_titleTextView);
-            titleTextView.setText(t.getTitle() + t.getArchived());
+            titleTextView.setText(t.getTitle());
 
             TextView dateTextView = convertView.findViewById(R.id.note_list_item_dateTextView);
             //Change date format for list
