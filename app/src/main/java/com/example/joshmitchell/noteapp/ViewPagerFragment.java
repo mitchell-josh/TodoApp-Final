@@ -86,6 +86,12 @@ public class ViewPagerFragment extends Fragment {
 
         @Override
         public int getItemPosition(Object object) {
+            Fragment fragment = (Fragment) object;
+            for (int i = 0; i < getCount() ; i++){
+                Fragment item = (Fragment) getItem(i);
+                if(item.equals(fragment))
+                    return POSITION_UNCHANGED;
+            }
             return POSITION_NONE;
         }
     }
