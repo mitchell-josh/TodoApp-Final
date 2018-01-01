@@ -38,9 +38,9 @@ public class EditNoteFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        UUID todoId = (UUID) getActivity()
-                .getIntent().getSerializableExtra(NoteActivity.EXTRA_TODO_ID);
-        mNote = NoteModel.get(getActivity()).getTextNote(todoId);
+        UUID noteId = (UUID) getActivity()
+                .getIntent().getSerializableExtra(NoteActivity.EXTRA_NOTE_ID);
+        mNote = NoteModel.get(getActivity()).getTextNote(noteId);
     }
 
     @Override

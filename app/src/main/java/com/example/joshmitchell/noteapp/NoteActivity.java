@@ -10,11 +10,11 @@ import java.util.UUID;
 
 public class NoteActivity extends SingleFragmentActivity{
 
-    public static final String EXTRA_TODO_ID = "todo_id";
+    public static final String EXTRA_NOTE_ID = "todo_id";
 
     public static Intent newIntent(Context packageContext, UUID todoId) {
         Intent intent = new Intent(packageContext, NoteActivity.class);
-        intent.putExtra(EXTRA_TODO_ID, todoId);
+        intent.putExtra(EXTRA_NOTE_ID, todoId);
         return intent;
     }
 

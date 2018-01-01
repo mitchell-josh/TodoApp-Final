@@ -14,6 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.UUID;
 
@@ -25,7 +26,7 @@ public class ViewNoteFragment extends Fragment {
 
     private Note mNote;
     private TextView mTitleField, mDateField, mDateDetailField, mContentField;
-    private int mCheckId, mUncheckId;
+    private Menu menu;
 
     public static final String EXTRA_NOTE_ID = "com.example.joshmitchell.noteapp.note_id";
 
@@ -54,24 +55,11 @@ public class ViewNoteFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater){
+        this.menu = menu;
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.fragment_note_view, menu);
+        updateMenuUI();
 
-        MenuItem checkedItem = menu.findItem(R.id.checked);
-        mCheckId = checkedItem.getItemId();
-
-        MenuItem uncheckedItem = menu.findItem(R.id.unchecked);
-        mUncheckId = uncheckedItem.getItemId();
-
-        //Initial conditional checks for check/uncheck box
-        if(mNote.getArchived() == false) {
-            uncheckedItem.setVisible(false);
-            checkedItem.setVisible(true);
-        }
-        if(mNote.getArchived() == true) {
-            checkedItem.setVisible(false);
-            uncheckedItem.setVisible(true);
-        }
     }
 
     @Override
@@ -83,17 +71,13 @@ public class ViewNoteFragment extends Fragment {
 
                 return true;
 
-            case R.id.checked:
-                mNote.setArchived(true);
-                item.setVisible(false);
-                System.out.println(item);
+            case R.id.checkbox:
+                if (item.isChecked())
+                    item.setChecked(false);
+                else item.setChecked(true);
 
-                return true;
-
-            case R.id.unchecked:
-                mNote.setArchived(false);
-                item.setVisible(false);
-
+                mNote.setArchived(item.isChecked());
+                updateMenuUI();
                 return true;
 
             default:
@@ -120,5 +104,13 @@ public class ViewNoteFragment extends Fragment {
         mContentField.setText(mNote.getContent());
 
         return v;
+    }
+
+    private void updateMenuUI(){
+        if(mNote.getArchived() == true) {
+            menu.findItem(R.id.checkbox).setChecked(true).setTitle("Uncheck");
+        }else {
+            menu.findItem(R.id.checkbox).setChecked(false).setTitle("Check");
+        }
     }
 }

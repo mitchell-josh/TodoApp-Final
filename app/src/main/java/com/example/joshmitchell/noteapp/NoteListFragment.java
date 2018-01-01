@@ -2,6 +2,7 @@ package com.example.joshmitchell.noteapp;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Paint;
 import android.icu.text.DateFormat;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
@@ -109,13 +110,22 @@ public class NoteListFragment extends ListFragment {
             Note t = getItem(position);
 
             TextView titleTextView = convertView.findViewById(R.id.note_list_item_titleTextView);
-            titleTextView.setText(t.getTitle());
+            titleTextView.setText(t.getTitle() + t.getArchived());
 
             TextView dateTextView = convertView.findViewById(R.id.note_list_item_dateTextView);
             //Change date format for list
             String stringDate = DateFormat.getPatternInstance(DateFormat.ABBR_MONTH_DAY)
                     .format(t.getDate());
             dateTextView.setText(stringDate);
+
+            //Strike through if item is checked
+            if (t.getArchived() == true){
+                titleTextView.setPaintFlags(titleTextView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                dateTextView.setPaintFlags(dateTextView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+            }else {
+                titleTextView.setPaintFlags(titleTextView.getPaintFlags() & (~ Paint.STRIKE_THRU_TEXT_FLAG));
+                dateTextView.setPaintFlags(titleTextView.getPaintFlags() & (~ Paint.STRIKE_THRU_TEXT_FLAG));
+            }
 
             return convertView;
         }

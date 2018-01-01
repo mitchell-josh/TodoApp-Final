@@ -10,14 +10,9 @@
         />
 
     <item
-        android:id="@+id/checked"
-        android:icon="@drawable/ic_check_box_black_24dp"
+        android:id="@+id/checkbox"
+        android:checkable="true"
         android:title="Check"
-        />
-
-    <item
-        android:id="@+id/unchecked"
-        android:title="Uncheck"
         />
 
 </menu>
