@@ -21,6 +21,7 @@ public class ViewPagerFragment extends Fragment {
 
     public static final String EXTRA_NOTE_ID = "todo_id";
     private UUID noteId;
+    MyAdapter adapter;
 
     private ArrayList<Note> mNotes;
 
@@ -36,10 +37,18 @@ public class ViewPagerFragment extends Fragment {
     }
 
     @Override
+    public void onResume(){
+        super.onResume();
+        adapter.notifyDataSetChanged();
+
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         noteId = (UUID) getArguments().getSerializable(EXTRA_NOTE_ID);
         mNotes = NoteModel.get(getActivity()).getTextNotes();
+        adapter = new MyAdapter(getChildFragmentManager());
     }
 
     @Override
@@ -48,18 +57,7 @@ public class ViewPagerFragment extends Fragment {
         View v = inflater.inflate(R.layout.activity_note_list_note_pager, container, false);
 
         ViewPager viewPager = v.findViewById(R.id.note_view_pager);
-        viewPager.setAdapter(new FragmentStatePagerAdapter(getChildFragmentManager()) {
-            @Override
-            public Fragment getItem(int position) {
-                Note t = mNotes.get(position);
-                return ViewNoteFragment.newInstance(t.getId());
-            }
-
-            @Override
-            public int getCount() {
-                return mNotes.size();
-            }
-        });
+        viewPager.setAdapter(adapter);
         for (int i = 0; i < mNotes.size(); i++){
             if (mNotes.get(i).getId().equals(noteId)) {
                 viewPager.setCurrentItem(i);
@@ -68,5 +66,27 @@ public class ViewPagerFragment extends Fragment {
         }
 
         return v;
+    }
+
+    public class MyAdapter extends FragmentStatePagerAdapter {
+
+        public MyAdapter(FragmentManager fm){
+            super(fm);
+        }
+
+        @Override
+        public int getCount(){
+            return mNotes.size();
+        }
+
+        public Fragment getItem(int position){
+            Note t = mNotes.get(position);
+            return ViewNoteFragment.newInstance(t.getId());
+        }
+
+        @Override
+        public int getItemPosition(Object object) {
+            return POSITION_NONE;
+        }
     }
 }
