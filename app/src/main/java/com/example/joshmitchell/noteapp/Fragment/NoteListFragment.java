@@ -104,7 +104,8 @@ public class NoteListFragment extends ListFragment {
     @Override
     public void onActivityResult(int requestCode, int ResultCode, Intent data){
         if (REQUEST_NEW_NOTE == requestCode){
-            mCursor = NoteModel.get(getActivity()).queryRuns();
+            Log.d("NoteListFragment", "onActivityResult");
+            mCursor.requery();
         }
     }
 
@@ -112,43 +113,6 @@ public class NoteListFragment extends ListFragment {
     public void onListItemClick(ListView l, View v, int position, long id){
         //Start NoteActivity
         mCallback.onEditSelected(id);
-    }
-
-    private class NoteAdapter extends ArrayAdapter<Note>{
-
-        public NoteAdapter(ArrayList<Note> notes){
-            super(getActivity(), 0, notes);
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent){
-            if (convertView == null){
-                convertView = getActivity().getLayoutInflater()
-                        .inflate(R.layout.list_item_note, null);
-            }
-
-            Note t = getItem(position);
-
-            TextView titleTextView = convertView.findViewById(R.id.note_list_item_titleTextView);
-            titleTextView.setText(t.getTitle());
-
-            TextView dateTextView = convertView.findViewById(R.id.note_list_item_dateTextView);
-            //Change date format for list
-            String stringDate = DateFormat.getPatternInstance(DateFormat.ABBR_MONTH_DAY)
-                    .format(t.getDate());
-            dateTextView.setText(stringDate);
-
-            //Strike through if item is checked
-            if (t.getArchived() == true){
-                titleTextView.setPaintFlags(titleTextView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-                dateTextView.setPaintFlags(dateTextView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-            }else {
-                titleTextView.setPaintFlags(titleTextView.getPaintFlags() & (~ Paint.STRIKE_THRU_TEXT_FLAG));
-                dateTextView.setPaintFlags(titleTextView.getPaintFlags() & (~ Paint.STRIKE_THRU_TEXT_FLAG));
-            }
-
-            return convertView;
-        }
     }
 
     private static class NoteCursorAdapter extends CursorAdapter {
