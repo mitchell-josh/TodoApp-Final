@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
+import java.util.Date;
 import java.util.UUID;
 
 /**
@@ -17,16 +18,17 @@ import java.util.UUID;
 
 public class EditNoteFragment extends Fragment {
 
+    private NoteModel noteModel;
     private Note mNote;
     private EditText mTitleField, mContentField;
 
     public static final String EXTRA_NOTE_ID =
             "com.example.joshmitchell.noteapp.crime_id";
 
-    public static EditNoteFragment newInstance(UUID noteId){
+    public static EditNoteFragment newInstance(long noteId){
         Bundle args = new Bundle();
 
-        args.putSerializable(EXTRA_NOTE_ID, noteId);
+        args.putLong(EXTRA_NOTE_ID, noteId);
 
         EditNoteFragment fragment = new EditNoteFragment();
         fragment.setArguments(args);
@@ -38,9 +40,18 @@ public class EditNoteFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        UUID noteId = (UUID) getActivity()
-                .getIntent().getSerializableExtra(NoteActivity.EXTRA_NOTE_ID);
-        mNote = NoteModel.get(getActivity()).getTextNote(noteId);
+        noteModel = noteModel.get(getActivity());
+        Bundle args = getArguments();
+        if (args != null){
+            long noteId = args.getLong(EXTRA_NOTE_ID, -1);
+            if( noteId != -1 ){
+                mNote = noteModel.getTextNote(noteId);
+            }
+        }
+        if (mNote == null) {
+            mNote = new Note();
+            noteModel.addNote(mNote);
+        }
     }
 
     @Override

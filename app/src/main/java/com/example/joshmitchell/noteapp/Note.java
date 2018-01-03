@@ -9,7 +9,7 @@ import java.util.UUID;
 
 public class Note {
 
-    private UUID mId;
+    private long mId;
     private String mTitle;
     private String mContent;
     private Date mDate;
@@ -17,8 +17,8 @@ public class Note {
 
     public Note(){
         // Generate text note
-        mId = UUID.randomUUID();
         mDate = new Date();
+        mId = -1;
     }
 
     @Override
@@ -35,8 +35,17 @@ public class Note {
         mDate = new Date();
     }
 
-    public UUID getId(){
+    public void setId(long id){
+        mId = id;
+    }
+
+    public long getId(){
         return mId;
+    }
+
+    public void setDate(long date){
+        Date d = new Date(date);
+        mDate = d;
     }
 
     public Date getDate(){

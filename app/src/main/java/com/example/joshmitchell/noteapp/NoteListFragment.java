@@ -2,16 +2,20 @@ package com.example.joshmitchell.noteapp;
 
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Paint;
 import android.icu.text.DateFormat;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.CursorAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -24,12 +28,16 @@ import java.util.UUID;
 
 public class NoteListFragment extends ListFragment {
 
+    private static final int REQUEST_NEW_NOTE = 0;
+
     private ArrayList<Note> mNotes;
+
+    private DatabaseHelper.NoteCursor mCursor;
 
     OnEditSelectedListener mCallback;
 
     public interface OnEditSelectedListener {
-        public void onEditSelected(UUID noteId);
+        public void onEditSelected(long noteId);
     }
 
     @Override
@@ -49,9 +57,10 @@ public class NoteListFragment extends ListFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getActivity().setTitle(R.string.notes_title);
-        mNotes = NoteModel.get(getActivity()).getTextNotes();
 
-        NoteAdapter adapter = new NoteAdapter(mNotes);
+        mCursor = NoteModel.get(getActivity()).queryRuns();
+
+        NoteCursorAdapter adapter = new NoteCursorAdapter(getActivity(), mCursor);
         setListAdapter(adapter);
 
         setHasOptionsMenu(true);
@@ -60,7 +69,12 @@ public class NoteListFragment extends ListFragment {
     @Override
     public void onResume(){
         super.onResume();
-        ((NoteAdapter)getListAdapter()).notifyDataSetChanged();
+    }
+
+    @Override
+    public void onDestroy(){
+        super.onDestroy();
+        mCursor.close();
     }
 
     @Override
@@ -73,12 +87,8 @@ public class NoteListFragment extends ListFragment {
     public boolean onOptionsItemSelected(MenuItem item){
         switch (item.getItemId()){
             case R.id.new_note:
-                Note note = new Note();
-                NoteModel.get(getActivity()).addNote(note);
-
-                Intent intent = NoteActivity.newIntent(getActivity(), note.getId());
-                startActivity(intent);
-
+                Intent intent = new Intent(getActivity(), NoteActivity.class);
+                startActivityForResult(intent, REQUEST_NEW_NOTE);
                 return true;
 
             default:
@@ -87,11 +97,22 @@ public class NoteListFragment extends ListFragment {
     }
 
     @Override
+    public void onActivityResult(int requestCode, int ResultCode, Intent data){
+        if (REQUEST_NEW_NOTE == requestCode){
+            mCursor = NoteModel.get(getActivity()).queryRuns();
+        }
+    }
+
+    @Override
     public void onListItemClick(ListView l, View v, int position, long id){
-        Note t = ((NoteAdapter)getListAdapter()).getItem(position);
+        //Note t = ((NoteAdapter)getListAdapter()).getItem(position);
 
         //Start NoteActivity
-        mCallback.onEditSelected(t.getId());
+        //mCallback.onEditSelected(t.getId());
+
+        Log.d("NoteListFragment", String.valueOf(id));
+        Intent intent = NoteActivity.newIntent(getActivity(), id);
+        startActivity(intent);
     }
 
     private class NoteAdapter extends ArrayAdapter<Note>{
@@ -128,6 +149,46 @@ public class NoteListFragment extends ListFragment {
             }
 
             return convertView;
+        }
+    }
+
+    private static class NoteCursorAdapter extends CursorAdapter {
+
+        private DatabaseHelper.NoteCursor  mNoteCursor;
+
+        public NoteCursorAdapter(Context context, DatabaseHelper.NoteCursor cursor){
+            super(context, cursor, 0);
+            mNoteCursor = cursor;
+        }
+
+        @Override
+        public View newView(Context context, Cursor cursor, ViewGroup parent){
+            LayoutInflater inflater = (LayoutInflater) context
+                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            return inflater.inflate(R.layout.list_item_note, parent, false);
+        }
+
+        @Override
+        public void bindView(View view, Context context, Cursor cursor){
+            Note t = mNoteCursor.getNote();
+
+            TextView titleTextView = view.findViewById(R.id.note_list_item_titleTextView);
+            titleTextView.setText(t.getTitle());
+
+            TextView dateTextView = view.findViewById(R.id.note_list_item_dateTextView);
+            //Change date format for list
+            String stringDate = DateFormat.getPatternInstance(DateFormat.ABBR_MONTH_DAY)
+                    .format(t.getDate());
+            dateTextView.setText(stringDate);
+
+            //Strike through if item is checked
+            if (t.getArchived() == true){
+                titleTextView.setPaintFlags(titleTextView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                dateTextView.setPaintFlags(dateTextView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+            }else {
+                titleTextView.setPaintFlags(titleTextView.getPaintFlags() & (~ Paint.STRIKE_THRU_TEXT_FLAG));
+                dateTextView.setPaintFlags(titleTextView.getPaintFlags() & (~ Paint.STRIKE_THRU_TEXT_FLAG));
+            }
         }
     }
 }

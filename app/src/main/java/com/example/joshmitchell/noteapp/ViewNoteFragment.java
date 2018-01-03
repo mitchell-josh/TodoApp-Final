@@ -31,10 +31,10 @@ public class ViewNoteFragment extends Fragment {
     public static final String EXTRA_NOTE_ID = "com.example.joshmitchell.noteapp.note_id";
 
 
-    public static ViewNoteFragment newInstance(UUID noteId) {
+    public static ViewNoteFragment newInstance(long noteId) {
         Bundle args = new Bundle();
 
-        args.putSerializable(EXTRA_NOTE_ID, noteId);
+        args.putLong(EXTRA_NOTE_ID, noteId);
 
         ViewNoteFragment fragment = new ViewNoteFragment();
         fragment.setArguments(args);
@@ -45,7 +45,7 @@ public class ViewNoteFragment extends Fragment {
     @Override
     public void onResume(){
         super.onResume();
-        UUID noteId = (UUID) getArguments().getSerializable(EXTRA_NOTE_ID);
+        long noteId = getArguments().getLong(EXTRA_NOTE_ID);
         mNote = NoteModel.get(getActivity()).getTextNote(noteId);
     }
 
@@ -53,7 +53,7 @@ public class ViewNoteFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        UUID noteId = (UUID) getArguments().getSerializable(EXTRA_NOTE_ID);
+        long noteId = getArguments().getLong(EXTRA_NOTE_ID);
         mNote = NoteModel.get(getActivity()).getTextNote(noteId);
 
         setHasOptionsMenu(true);

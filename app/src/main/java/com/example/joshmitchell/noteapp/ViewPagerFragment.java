@@ -20,15 +20,15 @@ import java.util.UUID;
 public class ViewPagerFragment extends Fragment {
 
     public static final String EXTRA_NOTE_ID = "todo_id";
-    private UUID noteId;
+    private long noteId;
     MyAdapter adapter;
 
     private ArrayList<Note> mNotes;
 
-    public static ViewPagerFragment newInstance(UUID noteId){
+    public static ViewPagerFragment newInstance(long noteId){
         Bundle args = new Bundle();
 
-        args.putSerializable(EXTRA_NOTE_ID, noteId);
+        args.putLong(EXTRA_NOTE_ID, noteId);
 
         ViewPagerFragment fragment = new ViewPagerFragment();
         fragment.setArguments(args);
@@ -46,7 +46,7 @@ public class ViewPagerFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        noteId = (UUID) getArguments().getSerializable(EXTRA_NOTE_ID);
+        noteId = getArguments().getLong(EXTRA_NOTE_ID);
         mNotes = NoteModel.get(getActivity()).getTextNotes();
         adapter = new MyAdapter(getChildFragmentManager());
     }
@@ -58,12 +58,6 @@ public class ViewPagerFragment extends Fragment {
 
         ViewPager viewPager = v.findViewById(R.id.note_view_pager);
         viewPager.setAdapter(adapter);
-        for (int i = 0; i < mNotes.size(); i++){
-            if (mNotes.get(i).getId().equals(noteId)) {
-                viewPager.setCurrentItem(i);
-                break;
-            }
-        }
 
         return v;
     }

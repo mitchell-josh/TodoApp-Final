@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 
 import java.util.UUID;
 
@@ -12,17 +13,18 @@ public class NoteActivity extends SingleFragmentActivity{
 
     public static final String EXTRA_NOTE_ID = "todo_id";
 
-    public static Intent newIntent(Context packageContext, UUID todoId) {
+    public static Intent newIntent(Context packageContext, long id) {
         Intent intent = new Intent(packageContext, NoteActivity.class);
-        intent.putExtra(EXTRA_NOTE_ID, todoId);
+        intent.putExtra(EXTRA_NOTE_ID, id);
         return intent;
     }
 
     @Override
     protected Fragment createFragment() {
-        UUID noteId = (UUID)getIntent()
-                .getSerializableExtra(EditNoteFragment.EXTRA_NOTE_ID);
+        long Id = getIntent()
+                .getLongExtra(EXTRA_NOTE_ID, -1);
+        Log.d("NoteActivity", String.valueOf(Id));
 
-        return EditNoteFragment.newInstance(noteId);
+        return EditNoteFragment.newInstance(Id);
     }
 }

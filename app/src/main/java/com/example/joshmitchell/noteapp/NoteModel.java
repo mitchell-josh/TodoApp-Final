@@ -1,6 +1,7 @@
 package com.example.joshmitchell.noteapp;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 
 import java.util.ArrayList;
 import java.util.UUID;
@@ -13,20 +14,21 @@ public class NoteModel {
 
     private ArrayList<Note> mNotes;
 
+    private static final String PREFS_FILE = "notes";
+    private static final String PREF_CURRENT_NOTE_ID = "NoteModel.currentNoteId";
+    private DatabaseHelper mHelper;
+    private SharedPreferences mPrefs;
+    private long mCurrentNoteId;
+
     private static NoteModel sNoteModel;
     private Context mAppContext;
 
     private NoteModel(Context appContext){
         mAppContext = appContext;
-        mNotes = new ArrayList<Note>();
+        mHelper = new DatabaseHelper(mAppContext);
+        mPrefs = mAppContext.getSharedPreferences(PREFS_FILE, Context.MODE_PRIVATE);
+        mCurrentNoteId = mPrefs.getLong(PREF_CURRENT_NOTE_ID, -1);
 
-        //Populate list with predefined data
-        for (int i=0; i < 100; i++){
-            Note t = new Note();
-            t.setTitle("Note #" + i);
-            t.setArchived(i % 2 == 0); //Every other one
-            mNotes.add(t);
-        }
     }
 
     public static NoteModel get(Context c){
@@ -40,20 +42,25 @@ public class NoteModel {
         return mNotes;
     }
 
-    public Note getTextNote(UUID id){
-        for (Note t : mNotes){
-            if(t.getId().equals(id)){
-                return t;
-            }
-        }
-        return null;
+    public Note getTextNote(long id){
+        Note note = null;
+        DatabaseHelper.NoteCursor cursor = mHelper.queryNote(id);
+        cursor.moveToFirst();
+        if(!cursor.isAfterLast())
+            note = cursor.getNote();
+        cursor.close();
+        return note;
     }
 
     public void addNote(Note note){
-        mNotes.add(note);
+        mHelper.insertNote(note);
     }
 
-    public void removeNote(UUID noteId){
+    public DatabaseHelper.NoteCursor queryRuns(){
+        return mHelper.queryNotes();
+    }
+
+    public void removeNote(long noteId){
         Note t = getTextNote(noteId);
         mNotes.remove(t);
     }
