@@ -1,11 +1,8 @@
-package com.example.joshmitchell.noteapp;
+package com.example.joshmitchell.noteapp.Fragment;
 
-import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.icu.text.DateFormat;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -14,9 +11,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import java.util.UUID;
+import com.example.joshmitchell.noteapp.Activity.NoteActivity;
+import com.example.joshmitchell.noteapp.Activity.NoteListActivity;
+import com.example.joshmitchell.noteapp.DB.NoteModel;
+import com.example.joshmitchell.noteapp.Model.Note;
+import com.example.joshmitchell.noteapp.R;
 
 /**
  * Created by Josh Mitchell on 28/12/2017.

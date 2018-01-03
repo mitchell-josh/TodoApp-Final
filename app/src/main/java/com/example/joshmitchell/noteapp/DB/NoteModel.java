@@ -1,10 +1,11 @@
-package com.example.joshmitchell.noteapp;
+package com.example.joshmitchell.noteapp.DB;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.example.joshmitchell.noteapp.Model.Note;
+
 import java.util.ArrayList;
-import java.util.UUID;
 
 /**
  * Created by Josh Mitchell on 27/12/2017.
@@ -24,6 +25,7 @@ public class NoteModel {
     private Context mAppContext;
 
     private NoteModel(Context appContext){
+        mNotes = new ArrayList<Note>();
         mAppContext = appContext;
         mHelper = new DatabaseHelper(mAppContext);
         mPrefs = mAppContext.getSharedPreferences(PREFS_FILE, Context.MODE_PRIVATE);
@@ -39,6 +41,13 @@ public class NoteModel {
     }
 
     public ArrayList<Note> getTextNotes() {
+        DatabaseHelper.NoteCursor cursor = mHelper.queryNotes();
+        cursor.moveToFirst();
+        while(!cursor.isAfterLast()){
+            mNotes.add(cursor.getNote());
+            cursor.moveToNext();
+        }
+        cursor.close();
         return mNotes;
     }
 

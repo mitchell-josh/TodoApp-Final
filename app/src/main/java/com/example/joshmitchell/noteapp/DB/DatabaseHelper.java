@@ -1,4 +1,4 @@
-package com.example.joshmitchell.noteapp;
+package com.example.joshmitchell.noteapp.DB;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -6,6 +6,8 @@ import android.database.Cursor;
 import android.database.CursorWrapper;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+
+import com.example.joshmitchell.noteapp.Model.Note;
 
 /**
  * Created by Josh Mitchell on 03/01/2018.

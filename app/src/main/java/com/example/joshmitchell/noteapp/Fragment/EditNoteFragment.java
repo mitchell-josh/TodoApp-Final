@@ -1,4 +1,4 @@
-package com.example.joshmitchell.noteapp;
+package com.example.joshmitchell.noteapp.Fragment;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -9,8 +9,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
-import java.util.Date;
-import java.util.UUID;
+import com.example.joshmitchell.noteapp.DB.NoteModel;
+import com.example.joshmitchell.noteapp.Model.Note;
+import com.example.joshmitchell.noteapp.R;
 
 /**
  * Created by Josh Mitchell on 27/12/2017.

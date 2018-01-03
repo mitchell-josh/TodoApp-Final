@@ -1,15 +1,13 @@
-package com.example.joshmitchell.noteapp;
+package com.example.joshmitchell.noteapp.Activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 
-import java.util.UUID;
+import com.example.joshmitchell.noteapp.Fragment.EditNoteFragment;
 
-public class NoteActivity extends SingleFragmentActivity{
+public class NoteActivity extends SingleFragmentActivity {
 
     public static final String EXTRA_NOTE_ID = "todo_id";
 

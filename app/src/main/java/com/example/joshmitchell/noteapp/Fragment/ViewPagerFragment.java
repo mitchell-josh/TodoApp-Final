@@ -1,17 +1,20 @@
-package com.example.joshmitchell.noteapp;
+package com.example.joshmitchell.noteapp.Fragment;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.joshmitchell.noteapp.DB.DatabaseHelper;
+import com.example.joshmitchell.noteapp.DB.NoteModel;
+import com.example.joshmitchell.noteapp.Model.Note;
+import com.example.joshmitchell.noteapp.R;
+
 import java.util.ArrayList;
-import java.util.UUID;
 
 /**
  * Created by Josh Mitchell on 01/01/2018.
@@ -19,6 +22,7 @@ import java.util.UUID;
 
 public class ViewPagerFragment extends Fragment {
 
+    private DatabaseHelper.NoteCursor mCursor;
     public static final String EXTRA_NOTE_ID = "todo_id";
     private long noteId;
     MyAdapter adapter;
@@ -58,6 +62,12 @@ public class ViewPagerFragment extends Fragment {
 
         ViewPager viewPager = v.findViewById(R.id.note_view_pager);
         viewPager.setAdapter(adapter);
+        for (int i = 0; i < mNotes.size(); i++){
+            if (mNotes.get(i).getId() == noteId) {
+                viewPager.setCurrentItem(i);
+                break;
+            }
+        }
 
         return v;
     }

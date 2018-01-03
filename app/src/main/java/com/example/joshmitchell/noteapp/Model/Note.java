@@ -1,4 +1,4 @@
-package com.example.joshmitchell.noteapp;
+package com.example.joshmitchell.noteapp.Model;
 
 import java.util.Date;
 import java.util.UUID;

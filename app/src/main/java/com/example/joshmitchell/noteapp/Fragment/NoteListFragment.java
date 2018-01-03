@@ -1,4 +1,4 @@
-package com.example.joshmitchell.noteapp;
+package com.example.joshmitchell.noteapp.Fragment;
 
 import android.content.Context;
 import android.content.Intent;
@@ -19,8 +19,13 @@ import android.widget.CursorAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.example.joshmitchell.noteapp.Activity.NoteActivity;
+import com.example.joshmitchell.noteapp.DB.DatabaseHelper;
+import com.example.joshmitchell.noteapp.DB.NoteModel;
+import com.example.joshmitchell.noteapp.Model.Note;
+import com.example.joshmitchell.noteapp.R;
+
 import java.util.ArrayList;
-import java.util.UUID;
 
 /**
  * Created by Josh Mitchell on 27/12/2017.
@@ -105,14 +110,8 @@ public class NoteListFragment extends ListFragment {
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id){
-        //Note t = ((NoteAdapter)getListAdapter()).getItem(position);
-
         //Start NoteActivity
-        //mCallback.onEditSelected(t.getId());
-
-        Log.d("NoteListFragment", String.valueOf(id));
-        Intent intent = NoteActivity.newIntent(getActivity(), id);
-        startActivity(intent);
+        mCallback.onEditSelected(id);
     }
 
     private class NoteAdapter extends ArrayAdapter<Note>{

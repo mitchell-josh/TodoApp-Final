@@ -1,4 +1,4 @@
-package com.example.joshmitchell.noteapp;
+package com.example.joshmitchell.noteapp.Activity;
 
 import android.os.Bundle;
 import android.os.PersistableBundle;
@@ -7,6 +7,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
+
+import com.example.joshmitchell.noteapp.R;
 
 /**
  * Created by Josh Mitchell on 27/12/2017.

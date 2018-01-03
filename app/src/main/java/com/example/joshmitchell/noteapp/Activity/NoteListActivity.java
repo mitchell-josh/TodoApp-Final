@@ -1,16 +1,18 @@
-package com.example.joshmitchell.noteapp;
+package com.example.joshmitchell.noteapp.Activity;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 
-import java.util.UUID;
+import com.example.joshmitchell.noteapp.Fragment.NoteListFragment;
+import com.example.joshmitchell.noteapp.R;
+import com.example.joshmitchell.noteapp.Fragment.ViewPagerFragment;
 
 /**
  * Created by Josh Mitchell on 27/12/2017.
  */
 
-public class NoteListActivity extends SingleFragmentActivity implements NoteListFragment.OnEditSelectedListener{
+public class NoteListActivity extends SingleFragmentActivity implements NoteListFragment.OnEditSelectedListener {
 
 
     public void onEditSelected(long noteId){
