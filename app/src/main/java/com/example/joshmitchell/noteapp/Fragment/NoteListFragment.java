@@ -15,15 +15,19 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.CursorAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
+import android.support.v4.widget.CursorAdapter;
 
 import com.example.joshmitchell.noteapp.Activity.NoteActivity;
 import com.example.joshmitchell.noteapp.DB.DatabaseHelper;
 import com.example.joshmitchell.noteapp.DB.NoteModel;
 import com.example.joshmitchell.noteapp.Model.Note;
 import com.example.joshmitchell.noteapp.R;
+import com.example.joshmitchell.noteapp.SQLiteCursorLoader;
 
 import java.util.ArrayList;
 
@@ -31,15 +35,28 @@ import java.util.ArrayList;
  * Created by Josh Mitchell on 27/12/2017.
  */
 
-public class NoteListFragment extends ListFragment {
+public class NoteListFragment extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final int REQUEST_NEW_NOTE = 0;
 
-    private ArrayList<Note> mNotes;
-
-    private DatabaseHelper.NoteCursor mCursor;
-
     OnEditSelectedListener mCallback;
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args){
+        return new NoteListCursorLoader(getActivity());
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor cursor){
+        NoteCursorAdapter adapter = new NoteCursorAdapter(getActivity(),
+                (DatabaseHelper.NoteCursor) cursor);
+        setListAdapter(adapter);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader){
+        setListAdapter(null);
+    }
 
     public interface OnEditSelectedListener {
         public void onEditSelected(long noteId);
@@ -62,13 +79,8 @@ public class NoteListFragment extends ListFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getActivity().setTitle(R.string.notes_title);
-
-        mCursor = NoteModel.get(getActivity()).queryRuns();
-
-        NoteCursorAdapter adapter = new NoteCursorAdapter(getActivity(), mCursor);
-        setListAdapter(adapter);
-
         setHasOptionsMenu(true);
+        getLoaderManager().initLoader(0, null, this);
     }
 
     @Override
@@ -76,11 +88,6 @@ public class NoteListFragment extends ListFragment {
         super.onResume();
     }
 
-    @Override
-    public void onDestroy(){
-        super.onDestroy();
-        mCursor.close();
-    }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater){
@@ -104,8 +111,7 @@ public class NoteListFragment extends ListFragment {
     @Override
     public void onActivityResult(int requestCode, int ResultCode, Intent data){
         if (REQUEST_NEW_NOTE == requestCode){
-            Log.d("NoteListFragment", "onActivityResult");
-            mCursor.requery();
+            getLoaderManager().restartLoader(0, null, this);
         }
     }
 
@@ -113,6 +119,18 @@ public class NoteListFragment extends ListFragment {
     public void onListItemClick(ListView l, View v, int position, long id){
         //Start NoteActivity
         mCallback.onEditSelected(id);
+    }
+
+    public static class NoteListCursorLoader extends SQLiteCursorLoader {
+
+        public NoteListCursorLoader(Context context){
+            super(context);
+        }
+
+        @Override
+        protected Cursor loadCursor() {
+            return NoteModel.get(getContext()).queryRuns();
+        }
     }
 
     private static class NoteCursorAdapter extends CursorAdapter {
