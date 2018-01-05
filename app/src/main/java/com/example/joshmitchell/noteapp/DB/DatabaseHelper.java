@@ -33,15 +33,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
+        Log.d("DatabaseHelper", "Create database");
         //Create note table
         db.execSQL("create table " + TABLE_NOTE + "(" +
                 "_id integer primary key autoincrement, date integer, title text, content text, " +
-                "created_date integer, solved integer, archived integer)");
+                "created_date integer, solved integer, archived integer default 0)");
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        //Changes here when upgrading
+        if (oldVersion >= newVersion)
+            return;
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_NOTE);
+        onCreate(db);
     }
 
     public long insertNote(Note note){
@@ -51,7 +55,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         cv.put(NOTE_CONTENT, note.getContent());
         cv.put(NOTE_CREATED_DATE, note.getDate().getTime());
         cv.put(NOTE_ARCHIVED, note.getArchived());
-        cv.put(NOTE_SOLVED, note.getArchived());
+        cv.put(NOTE_SOLVED, "2");
         return getWritableDatabase().insert(TABLE_NOTE, null, cv);
     }
 
@@ -63,7 +67,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         cv.put(NOTE_CONTENT, note.getContent());
         cv.put(NOTE_CREATED_DATE, note.getDate().getTime());
         cv.put(NOTE_ARCHIVED, note.getArchived());
-        cv.put(NOTE_SOLVED, note.getArchived());
+        cv.put(NOTE_SOLVED, "1");
+        Log.d("DatabaseHelper", note.getArchived());
+        Log.d("DatabaseHelper", "The ID Is (DatabaseModel): " + String.valueOf(note.getId()));
+
         return getWritableDatabase().update(TABLE_NOTE, cv, "_id = ?",
                 new String[] { String.valueOf(note.getId()) });
     }
@@ -105,6 +112,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             note.setDate(getLong(getColumnIndex(NOTE_DATE)));
             note.setTitle(getString(getColumnIndex(NOTE_TITLE)));
             note.setContent(getString(getColumnIndex(NOTE_CONTENT)));
+            note.setArchived(getString(getColumnIndex(NOTE_ARCHIVED)));
+            //TODO Update these later
             return note;
         }
     }

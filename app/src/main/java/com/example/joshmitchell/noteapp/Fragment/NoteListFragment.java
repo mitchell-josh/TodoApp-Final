@@ -119,11 +119,16 @@ public class NoteListFragment extends ListFragment implements LoaderManager.Load
         super.onResume();
         Log.d("NoteListFragment", "onResume Called");
         getLoaderManager().restartLoader(0, null, this);
+        if(adapter != null) {
+            Log.d("NoteListFragment", "Adapter is not null");
+            adapter.notifyDataSetChanged();
+        }
     }
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id){
         //Start NoteActivity
+        Log.d("ViewNoteFragment", "NoteListFrag" + String.valueOf(id));
         mCallback.onEditSelected(id);
     }
 
@@ -160,7 +165,7 @@ public class NoteListFragment extends ListFragment implements LoaderManager.Load
             Note t = mNoteCursor.getNote();
 
             TextView titleTextView = view.findViewById(R.id.note_list_item_titleTextView);
-            titleTextView.setText(t.getTitle() + String.valueOf(t.getArchived()));
+            titleTextView.setText(t.getTitle() + String.valueOf(t.getArchived()) + t.getSolved() + t.getCreatedDate());
 
             TextView dateTextView = view.findViewById(R.id.note_list_item_dateTextView);
             //Change date format for list
@@ -171,7 +176,7 @@ public class NoteListFragment extends ListFragment implements LoaderManager.Load
             Log.d("NoteListFragment", String.valueOf(t.getArchived()));
 
             //Strike through if item is checked
-            if (t.getArchived() == true){
+            if (t.getArchived() == "1"){
                 titleTextView.setPaintFlags(titleTextView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
                 dateTextView.setPaintFlags(dateTextView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
             }else {

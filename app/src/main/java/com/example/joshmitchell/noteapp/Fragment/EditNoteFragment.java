@@ -19,6 +19,8 @@ import com.example.joshmitchell.noteapp.Model.Note;
 import com.example.joshmitchell.noteapp.NoteLoader;
 import com.example.joshmitchell.noteapp.R;
 
+import java.util.Date;
+
 /**
  * Created by Josh Mitchell on 27/12/2017.
  */
@@ -69,7 +71,7 @@ public class EditNoteFragment extends Fragment implements LoaderManager.LoaderCa
         Log.d("NoteID", String.valueOf(noteId));
         if (args != null){
             noteId = args.getLong(EXTRA_NOTE_ID, -1);
-                Log.d("NoteID", String.valueOf(noteId));
+                Log.d("DatabaseHelper", "The ID Is (EditNoteFragment): " + String.valueOf(noteId));
             if( noteId != -1 ){
                 LoaderManager lm = getLoaderManager();
                 lm.initLoader(LOAD_NOTE, args, new NoteLoaderCallbacks());
@@ -78,7 +80,7 @@ public class EditNoteFragment extends Fragment implements LoaderManager.LoaderCa
 
         if (args == null) {
             noteId = -1;
-            mNote = new Note();
+            mNote = new Note("1");
         }
     }
 
@@ -104,6 +106,7 @@ public class EditNoteFragment extends Fragment implements LoaderManager.LoaderCa
             }
         });
 
+
         mContentField = v.findViewById(R.id.textnote_content);
         mContentField.addTextChangedListener(new TextWatcher() {
             @Override
@@ -128,9 +131,11 @@ public class EditNoteFragment extends Fragment implements LoaderManager.LoaderCa
     @Override
     public void onPause(){
         super.onPause();
-        if(noteId == -1)
+        if(noteId == -1) {
             noteModel.addNote(mNote);
-        noteModel.updateNote(mNote);
+        }else {
+            noteModel.updateNote(mNote);
+        }
     }
 
     @Override

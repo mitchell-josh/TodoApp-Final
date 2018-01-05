@@ -110,7 +110,7 @@ public class ViewPagerFragment extends Fragment {
             mNoteCursor.moveToPosition(position);
             Note t = mNoteCursor.getNote();
             Log.d("ViewPagerFragment", "getItem Called");
-            Log.d("ViewPagerFragment", String.valueOf(t.getId()));
+            Log.d("DatabaseHelper", "The Id Is: (ViewPagerFragment) " + String.valueOf(t.getId()));
             return ViewNoteFragment.newInstance(t.getId());
         }
 

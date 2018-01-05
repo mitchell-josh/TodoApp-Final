@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -42,6 +43,7 @@ public class ViewNoteFragment extends Fragment implements LoaderManager.LoaderCa
     @Override
     public void onLoadFinished(Loader<Note> loader, Note note){
         mNote = note;
+        Log.d("ViewNoteFragment", String.valueOf(note.getId()));
     }
 
     @Override
@@ -64,8 +66,6 @@ public class ViewNoteFragment extends Fragment implements LoaderManager.LoaderCa
     @Override
     public void onResume(){
         super.onResume();
-        long noteId = getArguments().getLong(EXTRA_NOTE_ID);
-        mNote = NoteModel.get(getActivity()).getTextNote(noteId);
     }
 
     @Override
@@ -87,7 +87,6 @@ public class ViewNoteFragment extends Fragment implements LoaderManager.LoaderCa
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.fragment_note_view, menu);
         updateMenuUI();
-
     }
 
     @Override
@@ -104,8 +103,14 @@ public class ViewNoteFragment extends Fragment implements LoaderManager.LoaderCa
                     item.setChecked(false);
                 else item.setChecked(true);
 
-                mNote.setArchived(item.isChecked());
-                NoteModel.get(getActivity()).updateNote(mNote);
+                Log.d("ViewNoteFragment", String.valueOf(mNote.getArchived()));
+                if(item.isChecked()) {
+                    mNote.setArchived("1");
+                    mNote.setTitle("WHY NO FUCKING UPDATE");
+                    mNote.setSolved(1);
+                    NoteModel.get(getActivity()).updateNote(mNote);
+                }
+                Log.d("ViewNoteFragment", String.valueOf(mNote.getArchived()));
                 updateMenuUI();
                 return true;
 
@@ -136,6 +141,15 @@ public class ViewNoteFragment extends Fragment implements LoaderManager.LoaderCa
         return v;
     }
 
+    @Override
+    public void onPause(){
+        super.onPause();
+            Log.d("ViewNoteFragment", "UpdateNote" + String.valueOf(mNote.getArchived()));
+            mNote.setArchived("1");
+            NoteModel.get(getActivity()).updateNote(mNote);
+
+    }
+
     private void updateUI(){
         mTitleField.setText(mNote.getTitle());
         mDateField.setText(DateFormat.getPatternInstance(DateFormat.ABBR_MONTH_DAY)
@@ -146,7 +160,7 @@ public class ViewNoteFragment extends Fragment implements LoaderManager.LoaderCa
     }
 
     private void updateMenuUI(){
-        if(mNote.getArchived() == true) {
+        if(mNote.getArchived() == "1") {
             menu.findItem(R.id.checkbox).setChecked(true).setTitle("Uncheck");
         }else {
             menu.findItem(R.id.checkbox).setChecked(false).setTitle("Check");
@@ -164,6 +178,10 @@ public class ViewNoteFragment extends Fragment implements LoaderManager.LoaderCa
         @Override
         public void onLoadFinished(Loader<Note> loader, Note data) {
             mNote = data;
+            Log.d("ViewNoteFragment", String.valueOf(data.getId()));
+            Log.d("DatabaseHelper", "The ID Is (ViewNoteFragment): " + String.valueOf(data.getId()));
+
+
             updateUI();
         }
 

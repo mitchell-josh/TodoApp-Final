@@ -13,12 +13,40 @@ public class Note {
     private String mTitle;
     private String mContent;
     private Date mDate;
-    private boolean mArchived;
+    private String mArchived;
+    private int mSolved;
+    private Date mCreatedDate;
+
+    public Date getCreatedDate() {
+        return mCreatedDate;
+    }
+
+    public void setCreatedDate(long date){
+        Date d = new Date(date);
+        mCreatedDate = d;
+    }
+
+
+    public int getSolved() {
+        return mSolved;
+    }
+
+    public void setSolved(int mSolved) {
+        this.mSolved = mSolved;
+    }
 
     public Note(){
         // Generate text note
         mDate = new Date();
         mId = -1;
+    }
+
+    public Note(String archived){
+        mDate = new Date();
+        mId = -1;
+
+        if(mArchived != null)
+            mArchived = getArchived();
     }
 
     @Override
@@ -52,11 +80,11 @@ public class Note {
         return mDate;
     }
 
-    public boolean getArchived(){
+    public String getArchived(){
         return mArchived;
     }
 
-    public void setArchived(boolean archived){
+    public void setArchived(String archived){
         mArchived = archived;
     }
 
@@ -68,5 +96,6 @@ public class Note {
     public String getContent(){
         return mContent;
     }
+
 
 }
