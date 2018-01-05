@@ -74,5 +74,7 @@ public class NoteModel {
         mNotes.remove(t);
     }
 
-
+    public void updateNote(Note note){
+        mHelper.updateNote(note);
+    }
 }

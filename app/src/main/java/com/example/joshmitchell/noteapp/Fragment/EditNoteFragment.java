@@ -121,6 +121,12 @@ public class EditNoteFragment extends Fragment implements LoaderManager.LoaderCa
         return v;
     }
 
+    @Override
+    public void onPause(){
+        super.onPause();
+        noteModel.updateNote(mNote);
+    }
+
     private class NoteLoaderCallbacks implements LoaderManager.LoaderCallbacks<Note> {
 
         @Override

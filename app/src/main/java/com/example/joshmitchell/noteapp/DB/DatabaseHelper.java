@@ -54,6 +54,23 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return getWritableDatabase().insert(TABLE_NOTE, null, cv);
     }
 
+    public long updateNote(Note note){
+        ContentValues cv = new ContentValues();
+        cv.put(NOTE_DATE, note.getDate().getTime());
+        cv.put(NOTE_TITLE, note.getTitle());
+        cv.put(NOTE_CONTENT, note.getContent());
+        cv.put(NOTE_CREATED_DATE, note.getDate().getTime());
+        cv.put(NOTE_ARCHIVED, note.getArchived());
+        cv.put(NOTE_SOLVED, note.getArchived());
+        return getWritableDatabase().update(TABLE_NOTE, cv, "_id = ?",
+                new String[] { String.valueOf(note.getId()) });
+    }
+
+    public long removeNote(Note note){
+        return getWritableDatabase().delete(TABLE_NOTE, "_id = ?",
+                new String[] { String.valueOf(note.getId()) });
+    }
+
     public NoteCursor queryNotes(){
         Cursor wrapped = getReadableDatabase().query(TABLE_NOTE,
                 null, null, null, null, null, NOTE_DATE + " asc");
