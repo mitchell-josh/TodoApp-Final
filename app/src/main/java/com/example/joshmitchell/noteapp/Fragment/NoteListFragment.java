@@ -38,6 +38,7 @@ import java.util.ArrayList;
 public class NoteListFragment extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final int REQUEST_NEW_NOTE = 0;
+    NoteCursorAdapter adapter;
 
     OnEditSelectedListener mCallback;
 
@@ -48,8 +49,10 @@ public class NoteListFragment extends ListFragment implements LoaderManager.Load
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor){
-        NoteCursorAdapter adapter = new NoteCursorAdapter(getActivity(),
+        Log.d("NoteListFragment", "Load Finished");
+        adapter = new NoteCursorAdapter(getActivity(),
                 (DatabaseHelper.NoteCursor) cursor);
+        adapter.swapCursor(cursor);
         setListAdapter(adapter);
     }
 
@@ -104,7 +107,9 @@ public class NoteListFragment extends ListFragment implements LoaderManager.Load
 
     @Override
     public void onActivityResult(int requestCode, int ResultCode, Intent data){
+        Log.d("EditNoteFragment", "Request new Note called");
         if (REQUEST_NEW_NOTE == requestCode){
+            adapter.notifyDataSetChanged();
             getLoaderManager().restartLoader(0, null, this);
         }
     }
@@ -112,6 +117,7 @@ public class NoteListFragment extends ListFragment implements LoaderManager.Load
     @Override
     public void onResume(){
         super.onResume();
+        Log.d("NoteListFragment", "onResume Called");
         getLoaderManager().restartLoader(0, null, this);
     }
 

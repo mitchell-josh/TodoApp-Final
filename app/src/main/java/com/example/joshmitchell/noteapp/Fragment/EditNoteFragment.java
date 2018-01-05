@@ -29,8 +29,9 @@ public class EditNoteFragment extends Fragment implements LoaderManager.LoaderCa
     private Note mNote;
     private EditText mTitleField, mContentField;
     private static final int LOAD_NOTE = 0;
+    private long noteId;
 
-    public static final String EXTRA_NOTE_ID =
+    public static String EXTRA_NOTE_ID =
             "com.example.joshmitchell.noteapp.note_id";
 
     @Override
@@ -65,9 +66,10 @@ public class EditNoteFragment extends Fragment implements LoaderManager.LoaderCa
         noteModel = noteModel.get(getActivity());
 
         Bundle args = getArguments();
+        Log.d("NoteID", String.valueOf(noteId));
         if (args != null){
-            long noteId = args.getLong(EXTRA_NOTE_ID, -1);
-                Log.d("NoteID", "Note is null");
+            noteId = args.getLong(EXTRA_NOTE_ID, -1);
+                Log.d("NoteID", String.valueOf(noteId));
             if( noteId != -1 ){
                 LoaderManager lm = getLoaderManager();
                 lm.initLoader(LOAD_NOTE, args, new NoteLoaderCallbacks());
@@ -75,8 +77,8 @@ public class EditNoteFragment extends Fragment implements LoaderManager.LoaderCa
         }
 
         if (args == null) {
+            noteId = -1;
             mNote = new Note();
-            NoteModel.get(getActivity()).addNote(mNote);
         }
     }
 
@@ -126,12 +128,16 @@ public class EditNoteFragment extends Fragment implements LoaderManager.LoaderCa
     @Override
     public void onPause(){
         super.onPause();
+        if(noteId == -1)
+            noteModel.addNote(mNote);
         noteModel.updateNote(mNote);
     }
 
     @Override
     public void onStop(){
         super.onStop();
+        Log.d("EditNoteFragment", "FRAG STOPPED");
+
     }
 
     public void updateUI(){
@@ -151,7 +157,11 @@ public class EditNoteFragment extends Fragment implements LoaderManager.LoaderCa
 
         @Override
         public void onLoadFinished(Loader<Note> loader, Note data) {
-            Log.d("EditNotFragment", "Load Finished");
+            Log.d("EditNoteFragment", "Load Finished");
+
+            if(data == null)
+                Log.d("EditNoteFragment", "Load Finished NULL");
+
             mNote = data;
             updateUI();
         }
