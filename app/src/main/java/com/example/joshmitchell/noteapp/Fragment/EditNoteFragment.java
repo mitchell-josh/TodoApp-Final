@@ -6,10 +6,13 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.example.joshmitchell.noteapp.DB.NoteModel;
 import com.example.joshmitchell.noteapp.Model.Note;
@@ -64,15 +67,16 @@ public class EditNoteFragment extends Fragment implements LoaderManager.LoaderCa
         Bundle args = getArguments();
         if (args != null){
             long noteId = args.getLong(EXTRA_NOTE_ID, -1);
+                Log.d("NoteID", "Note is null");
             if( noteId != -1 ){
                 LoaderManager lm = getLoaderManager();
                 lm.initLoader(LOAD_NOTE, args, new NoteLoaderCallbacks());
-                mNote = noteModel.getTextNote(noteId);
             }
         }
-        if (mNote == null) {
+
+        if (args == null) {
             mNote = new Note();
-            noteModel.addNote(mNote);
+            NoteModel.get(getActivity()).addNote(mNote);
         }
     }
 
@@ -81,7 +85,6 @@ public class EditNoteFragment extends Fragment implements LoaderManager.LoaderCa
         View v = inflater.inflate(R.layout.fragment_textnote, parent, false);
 
         mTitleField = v.findViewById(R.id.textnote_title);
-        mTitleField.setText(mNote.getTitle());
         mTitleField.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -100,7 +103,6 @@ public class EditNoteFragment extends Fragment implements LoaderManager.LoaderCa
         });
 
         mContentField = v.findViewById(R.id.textnote_content);
-        mContentField.setText(mNote.getContent());
         mContentField.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -127,6 +129,19 @@ public class EditNoteFragment extends Fragment implements LoaderManager.LoaderCa
         noteModel.updateNote(mNote);
     }
 
+    @Override
+    public void onStop(){
+        super.onStop();
+    }
+
+    public void updateUI(){
+        if(mNote != null){
+            mTitleField.setText(mNote.getTitle());
+            mContentField.setText(mNote.getContent());
+        }
+
+    }
+
     private class NoteLoaderCallbacks implements LoaderManager.LoaderCallbacks<Note> {
 
         @Override
@@ -136,7 +151,9 @@ public class EditNoteFragment extends Fragment implements LoaderManager.LoaderCa
 
         @Override
         public void onLoadFinished(Loader<Note> loader, Note data) {
+            Log.d("EditNotFragment", "Load Finished");
             mNote = data;
+            updateUI();
         }
 
         @Override

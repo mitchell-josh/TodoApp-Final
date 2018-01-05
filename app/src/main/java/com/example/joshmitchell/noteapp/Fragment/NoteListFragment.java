@@ -84,12 +84,6 @@ public class NoteListFragment extends ListFragment implements LoaderManager.Load
     }
 
     @Override
-    public void onResume(){
-        super.onResume();
-    }
-
-
-    @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater){
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.list_item_note, menu);
@@ -113,6 +107,12 @@ public class NoteListFragment extends ListFragment implements LoaderManager.Load
         if (REQUEST_NEW_NOTE == requestCode){
             getLoaderManager().restartLoader(0, null, this);
         }
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        getLoaderManager().restartLoader(0, null, this);
     }
 
     @Override

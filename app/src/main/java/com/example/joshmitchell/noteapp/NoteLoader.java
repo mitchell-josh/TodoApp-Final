@@ -1,6 +1,7 @@
 package com.example.joshmitchell.noteapp;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.example.joshmitchell.noteapp.DB.NoteModel;
 import com.example.joshmitchell.noteapp.Model.Note;
@@ -16,10 +17,13 @@ public class NoteLoader extends DataLoader<Note> {
     public NoteLoader(Context context, long noteId){
         super(context);
         mNoteId = noteId;
+        Log.d("NoteLoader", "NoteLoader");
     }
 
     @Override
     public Note loadInBackground() {
+        Log.d("NoteLoader", "loadInBackground");
         return NoteModel.get(getContext()).getTextNote(mNoteId);
+
     }
 }

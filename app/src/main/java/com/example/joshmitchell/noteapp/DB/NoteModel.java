@@ -69,9 +69,8 @@ public class NoteModel {
         return mHelper.queryNotes();
     }
 
-    public void removeNote(long noteId){
-        Note t = getTextNote(noteId);
-        mNotes.remove(t);
+    public void removeNote(Note note){
+        mHelper.removeNote(note);
     }
 
     public void updateNote(Note note){
