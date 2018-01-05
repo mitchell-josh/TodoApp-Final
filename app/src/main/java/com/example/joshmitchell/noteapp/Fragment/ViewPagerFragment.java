@@ -47,6 +47,7 @@ public class ViewPagerFragment extends Fragment {
     @Override
     public void onResume(){
         super.onResume();
+        adapter.notifyDataSetChanged();
         Log.d("ViewPagerFragment", "onResume Called");
     }
 
@@ -115,14 +116,6 @@ public class ViewPagerFragment extends Fragment {
 
         @Override
         public int getItemPosition(Object object) {
-            Fragment fragment = (Fragment) object;
-            for (int i = 0; i < getCount() ; i++){
-                Fragment item = (Fragment) getItem(i);
-                if(item.equals(fragment))
-                    Log.d("ViewPagerFragment", "onResume Called POS_UNCHANGED");
-                    return POSITION_UNCHANGED;
-            }
-            Log.d("ViewPagerFragment", "onResume Called POS_NONE");
             return POSITION_NONE;
         }
     }
