@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.CursorWrapper;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import com.example.joshmitchell.noteapp.Model.Note;
 
@@ -55,6 +56,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     public long updateNote(Note note){
+        Log.d("DatabaseHelper", "Update not called");
         ContentValues cv = new ContentValues();
         cv.put(NOTE_DATE, note.getDate().getTime());
         cv.put(NOTE_TITLE, note.getTitle());

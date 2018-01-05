@@ -160,13 +160,15 @@ public class NoteListFragment extends ListFragment implements LoaderManager.Load
             Note t = mNoteCursor.getNote();
 
             TextView titleTextView = view.findViewById(R.id.note_list_item_titleTextView);
-            titleTextView.setText(t.getTitle());
+            titleTextView.setText(t.getTitle() + String.valueOf(t.getArchived()));
 
             TextView dateTextView = view.findViewById(R.id.note_list_item_dateTextView);
             //Change date format for list
             String stringDate = DateFormat.getPatternInstance(DateFormat.ABBR_MONTH_DAY)
                     .format(t.getDate());
             dateTextView.setText(stringDate);
+
+            Log.d("NoteListFragment", String.valueOf(t.getArchived()));
 
             //Strike through if item is checked
             if (t.getArchived() == true){

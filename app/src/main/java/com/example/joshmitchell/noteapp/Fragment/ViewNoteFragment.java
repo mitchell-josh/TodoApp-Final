@@ -31,6 +31,7 @@ public class ViewNoteFragment extends Fragment implements LoaderManager.LoaderCa
     private TextView mTitleField, mDateField, mDateDetailField, mContentField;
     private Menu menu;
 
+    public static final int LOAD_NOTE = 0;
     public static final String EXTRA_NOTE_ID = "com.example.joshmitchell.noteapp.note_id";
 
     @Override
@@ -70,11 +71,12 @@ public class ViewNoteFragment extends Fragment implements LoaderManager.LoaderCa
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        long noteId = getArguments().getLong(EXTRA_NOTE_ID);
+
+        Bundle args = getArguments();
+        long noteId = args.getLong(EXTRA_NOTE_ID);
 
         LoaderManager lm = getLoaderManager();
-        //lm.initLoader(LOAD_NOTE, args, new EditNoteFragment.NoteLoaderCallbacks());
-        mNote = NoteModel.get(getActivity()).getTextNote(noteId);
+        lm.initLoader(LOAD_NOTE, args, new ViewNoteFragment.NoteLoaderCallbacks());
 
         setHasOptionsMenu(true);
     }
@@ -124,19 +126,23 @@ public class ViewNoteFragment extends Fragment implements LoaderManager.LoaderCa
         View v = inflater.inflate(R.layout.fragment_note_view, parent, false);
 
         mTitleField = v.findViewById(R.id.view_title);
-        mTitleField.setText(mNote.getTitle());
 
         mDateField = v.findViewById(R.id.view_date);
-        mDateField.setText(DateFormat.getPatternInstance(DateFormat.ABBR_MONTH_DAY)
-                .format(mNote.getDate()));
 
         mDateDetailField = v.findViewById(R.id.view_date_detail);
-        mDateDetailField.setText(mNote.getDate().toString());
 
         mContentField = v.findViewById(R.id.view_content);
-        mContentField.setText(mNote.getContent());
 
         return v;
+    }
+
+    private void updateUI(){
+        mTitleField.setText(mNote.getTitle());
+        mDateField.setText(DateFormat.getPatternInstance(DateFormat.ABBR_MONTH_DAY)
+                .format(mNote.getDate()));
+        mDateDetailField.setText(mNote.getDate().toString());
+        mContentField.setText(mNote.getContent());
+
     }
 
     private void updateMenuUI(){
@@ -158,6 +164,7 @@ public class ViewNoteFragment extends Fragment implements LoaderManager.LoaderCa
         @Override
         public void onLoadFinished(Loader<Note> loader, Note data) {
             mNote = data;
+            updateUI();
         }
 
         @Override
