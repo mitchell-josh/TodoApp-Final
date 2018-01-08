@@ -9,5 +9,5 @@
     <string name="notes_title">Notes</string>
     <string name="edit_note">Edit Note</string>
 
-
+    <string name="delete_note">Delete Note</string>
 </resources>

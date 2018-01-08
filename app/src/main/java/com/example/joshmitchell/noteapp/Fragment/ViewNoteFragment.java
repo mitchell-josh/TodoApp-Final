@@ -4,52 +4,33 @@ import android.content.Intent;
 import android.icu.text.DateFormat;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.Loader;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.joshmitchell.noteapp.Activity.NoteActivity;
 import com.example.joshmitchell.noteapp.Activity.NoteListActivity;
 import com.example.joshmitchell.noteapp.DB.NoteModel;
 import com.example.joshmitchell.noteapp.Model.Note;
-import com.example.joshmitchell.noteapp.NoteLoader;
 import com.example.joshmitchell.noteapp.R;
 
 /**
  * Created by Josh Mitchell on 28/12/2017.
  */
 
-public class ViewNoteFragment extends Fragment implements LoaderManager.LoaderCallbacks<Note> {
+public class ViewNoteFragment extends Fragment {
 
     private Note mNote;
     private TextView mTitleField, mDateField, mDateDetailField, mContentField;
     private Menu menu;
-
-    public static final int LOAD_NOTE = 0;
     public static final String EXTRA_NOTE_ID = "com.example.joshmitchell.noteapp.note_id";
-
-    @Override
-    public Loader<Note> onCreateLoader(int id, Bundle args){
-        return new NoteLoader(getActivity(), args.getLong(EXTRA_NOTE_ID));
-    }
-
-    @Override
-    public void onLoadFinished(Loader<Note> loader, Note note){
-        mNote = note;
-        Log.d("ViewNoteFragment", String.valueOf(note.getId()));
-    }
-
-    @Override
-    public void onLoaderReset(Loader<Note> loader){
-        //Do Nothing
-    }
 
 
     public static ViewNoteFragment newInstance(long noteId) {
@@ -71,14 +52,10 @@ public class ViewNoteFragment extends Fragment implements LoaderManager.LoaderCa
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        Bundle args = getArguments();
-        long noteId = args.getLong(EXTRA_NOTE_ID);
-
-        LoaderManager lm = getLoaderManager();
-        lm.initLoader(LOAD_NOTE, args, new ViewNoteFragment.NoteLoaderCallbacks());
-
+        long noteId = getArguments().getLong(EXTRA_NOTE_ID);
+        mNote = NoteModel.get(getActivity()).getTextNote(noteId);
         setHasOptionsMenu(true);
+
     }
 
     @Override
@@ -86,6 +63,7 @@ public class ViewNoteFragment extends Fragment implements LoaderManager.LoaderCa
         this.menu = menu;
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.fragment_note_view, menu);
+        Log.d("ViewNoteFragment", "onCreateOptionsMenu");
         updateMenuUI();
     }
 
@@ -98,32 +76,35 @@ public class ViewNoteFragment extends Fragment implements LoaderManager.LoaderCa
 
                 return true;
 
-            case R.id.checkbox:
-                if (item.isChecked())
-                    item.setChecked(false);
-                else item.setChecked(true);
-
-                Log.d("ViewNoteFragment", String.valueOf(mNote.getArchived()));
-                if(item.isChecked()) {
-                    mNote.setArchived("1");
-                    mNote.setTitle("WHY NO FUCKING UPDATE");
-                    mNote.setSolved(1);
-                    NoteModel.get(getActivity()).updateNote(mNote);
-                }
-                Log.d("ViewNoteFragment", String.valueOf(mNote.getArchived()));
-                updateMenuUI();
-                return true;
-
             case R.id.remove:
                 NoteModel.get(getActivity()).removeNote(mNote);
                 Intent i = new Intent(getActivity(), NoteListActivity.class);
                 startActivity(i);
 
                 return true;
+
+
+            case R.id.Check:
+                if (item.isChecked())
+                    item.setChecked(false);
+                else item.setChecked(true);
+
+                mNote.setArchived(item.isChecked() ? 1 : 0);
+                NoteModel.get(getActivity()).updateNote(mNote);
+                updateMenuUI();
+                return true;
+
+
             default:
                 return super.onOptionsItemSelected(item);
 
         }
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        getActivity().getMenuInflater().inflate(R.menu.note_list_item_context, menu);
+
     }
 
     @Override
@@ -138,16 +119,14 @@ public class ViewNoteFragment extends Fragment implements LoaderManager.LoaderCa
 
         mContentField = v.findViewById(R.id.view_content);
 
+        updateUI();
+
         return v;
     }
 
     @Override
     public void onPause(){
         super.onPause();
-            Log.d("ViewNoteFragment", "UpdateNote" + String.valueOf(mNote.getArchived()));
-            mNote.setArchived("1");
-            NoteModel.get(getActivity()).updateNote(mNote);
-
     }
 
     private void updateUI(){
@@ -160,34 +139,11 @@ public class ViewNoteFragment extends Fragment implements LoaderManager.LoaderCa
     }
 
     private void updateMenuUI(){
-        if(mNote.getArchived() == "1") {
-            menu.findItem(R.id.checkbox).setChecked(true).setTitle("Uncheck");
+        Log.d("ViewNoteFragment", "updateMenuUI");
+        if(mNote.getArchived() == 1) {
+            menu.findItem(R.id.Check).setChecked(true).setTitle("Uncheck");
         }else {
-            menu.findItem(R.id.checkbox).setChecked(false).setTitle("Check");
-        }
-    }
-
-
-    private class NoteLoaderCallbacks implements LoaderManager.LoaderCallbacks<Note> {
-
-        @Override
-        public Loader<Note> onCreateLoader(int id, Bundle args) {
-            return new NoteLoader(getActivity(), args.getLong(EXTRA_NOTE_ID));
-        }
-
-        @Override
-        public void onLoadFinished(Loader<Note> loader, Note data) {
-            mNote = data;
-            Log.d("ViewNoteFragment", String.valueOf(data.getId()));
-            Log.d("DatabaseHelper", "The ID Is (ViewNoteFragment): " + String.valueOf(data.getId()));
-
-
-            updateUI();
-        }
-
-        @Override
-        public void onLoaderReset(Loader<Note> loader) {
-            // Do Nothing
+            menu.findItem(R.id.Check).setChecked(false).setTitle("Check");
         }
     }
 }

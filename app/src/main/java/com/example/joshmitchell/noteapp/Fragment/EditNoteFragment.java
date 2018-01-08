@@ -7,19 +7,15 @@ import android.support.v4.content.Loader;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.example.joshmitchell.noteapp.DB.NoteModel;
 import com.example.joshmitchell.noteapp.Model.Note;
-import com.example.joshmitchell.noteapp.NoteLoader;
+import com.example.joshmitchell.noteapp.DB.Loaders.NoteLoader;
 import com.example.joshmitchell.noteapp.R;
-
-import java.util.Date;
 
 /**
  * Created by Josh Mitchell on 27/12/2017.
@@ -80,7 +76,7 @@ public class EditNoteFragment extends Fragment implements LoaderManager.LoaderCa
 
         if (args == null) {
             noteId = -1;
-            mNote = new Note("1");
+            mNote = new Note();
         }
     }
 
@@ -124,7 +120,6 @@ public class EditNoteFragment extends Fragment implements LoaderManager.LoaderCa
 
             }
         });
-
         return v;
     }
 

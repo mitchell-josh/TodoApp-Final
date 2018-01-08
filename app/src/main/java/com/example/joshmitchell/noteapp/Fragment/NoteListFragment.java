@@ -8,17 +8,19 @@ import android.icu.text.DateFormat;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.util.Log;
+import android.view.ActionMode;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
+import android.widget.AbsListView;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.support.v4.app.LoaderManager;
-import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.CursorAdapter;
 
@@ -27,9 +29,7 @@ import com.example.joshmitchell.noteapp.DB.DatabaseHelper;
 import com.example.joshmitchell.noteapp.DB.NoteModel;
 import com.example.joshmitchell.noteapp.Model.Note;
 import com.example.joshmitchell.noteapp.R;
-import com.example.joshmitchell.noteapp.SQLiteCursorLoader;
-
-import java.util.ArrayList;
+import com.example.joshmitchell.noteapp.DB.Loaders.SQLiteCursorLoader;
 
 /**
  * Created by Josh Mitchell on 27/12/2017.
@@ -87,6 +87,64 @@ public class NoteListFragment extends ListFragment implements LoaderManager.Load
     }
 
     @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
+        View v = super.onCreateView(inflater, parent, savedInstanceState);
+
+        ListView listView = v.findViewById(android.R.id.list);
+        listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
+        registerForContextMenu(listView);
+        listView.setMultiChoiceModeListener(new AbsListView.MultiChoiceModeListener() {
+            @Override
+            public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked) {
+
+            }
+
+            @Override
+            public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+                MenuInflater inflater = mode.getMenuInflater();
+                inflater.inflate(R.menu.note_list_item_context, menu);
+                return true;
+            }
+
+            @Override
+            public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+                return false;
+            }
+
+            @Override
+            public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.menu_item_delete_note:
+                        NoteCursorAdapter adapter = (NoteCursorAdapter) getListAdapter();
+                        NoteModel noteModel = NoteModel.get(getActivity());
+                        for (int i = adapter.getCount() - 1; i >= 0; i--){
+                            if(getListView().isItemChecked(i)) {
+                                adapter.mNoteCursor.moveToPosition(i);
+                                noteModel.removeNote(adapter.mNoteCursor.getNote());
+                            }
+                        }
+                        mode.finish();
+                        restartLoader();
+                        return true;
+                    default:
+                        return false;
+                }
+            }
+
+            @Override
+            public void onDestroyActionMode(ActionMode mode) {
+
+            }
+        });
+
+        return v;
+
+    }
+
+    private void restartLoader(){
+        getLoaderManager().restartLoader(0, null, this);
+    }
+    @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater){
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.list_item_note, menu);
@@ -103,6 +161,31 @@ public class NoteListFragment extends ListFragment implements LoaderManager.Load
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        getActivity().getMenuInflater().inflate(R.menu.note_list_item_context, menu);
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item){
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)
+                item.getMenuInfo();
+        NoteCursorAdapter adapter = (NoteCursorAdapter) getListAdapter();
+        int itemPos = info.position;
+        adapter.mNoteCursor.moveToPosition(itemPos);
+        Note t = adapter.mNoteCursor.getNote();
+
+        switch (item.getItemId()) {
+            case R.id.menu_item_delete_note:
+                Log.d("NoteListFragment", "Delete Note");
+                NoteModel.get(getActivity()).removeNote(t);
+                adapter.notifyDataSetChanged();
+                getLoaderManager().restartLoader(0, null, this);
+                return true;
+        }
+        return super.onContextItemSelected(item);
     }
 
     @Override
@@ -164,8 +247,10 @@ public class NoteListFragment extends ListFragment implements LoaderManager.Load
         public void bindView(View view, Context context, Cursor cursor){
             Note t = mNoteCursor.getNote();
 
+            ListView listView = view.findViewById(android.R.id.list);
+
             TextView titleTextView = view.findViewById(R.id.note_list_item_titleTextView);
-            titleTextView.setText(t.getTitle() + String.valueOf(t.getArchived()) + t.getSolved() + t.getCreatedDate());
+            titleTextView.setText(t.getTitle() + " " + String.valueOf(t.getArchived()));
 
             TextView dateTextView = view.findViewById(R.id.note_list_item_dateTextView);
             //Change date format for list
@@ -176,7 +261,7 @@ public class NoteListFragment extends ListFragment implements LoaderManager.Load
             Log.d("NoteListFragment", String.valueOf(t.getArchived()));
 
             //Strike through if item is checked
-            if (t.getArchived() == "1"){
+            if (t.getArchived() == 1){
                 titleTextView.setPaintFlags(titleTextView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
                 dateTextView.setPaintFlags(dateTextView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
             }else {

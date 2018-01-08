@@ -13,7 +13,7 @@ public class Note {
     private String mTitle;
     private String mContent;
     private Date mDate;
-    private String mArchived;
+    private int mArchived;
     private int mSolved;
     private Date mCreatedDate;
 
@@ -39,14 +39,6 @@ public class Note {
         // Generate text note
         mDate = new Date();
         mId = -1;
-    }
-
-    public Note(String archived){
-        mDate = new Date();
-        mId = -1;
-
-        if(mArchived != null)
-            mArchived = getArchived();
     }
 
     @Override
@@ -80,11 +72,11 @@ public class Note {
         return mDate;
     }
 
-    public String getArchived(){
+    public int getArchived(){
         return mArchived;
     }
 
-    public void setArchived(String archived){
+    public void setArchived(int archived){
         mArchived = archived;
     }
 

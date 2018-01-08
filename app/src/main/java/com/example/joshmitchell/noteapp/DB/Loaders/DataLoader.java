@@ -1,4 +1,4 @@
-package com.example.joshmitchell.noteapp;
+package com.example.joshmitchell.noteapp.DB.Loaders;
 
 import android.content.Context;
 import android.support.v4.content.AsyncTaskLoader;

@@ -1,13 +1,9 @@
 package com.example.joshmitchell.noteapp.Fragment;
 
-import android.content.Context;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.Loader;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,9 +14,6 @@ import com.example.joshmitchell.noteapp.DB.DatabaseHelper;
 import com.example.joshmitchell.noteapp.DB.NoteModel;
 import com.example.joshmitchell.noteapp.Model.Note;
 import com.example.joshmitchell.noteapp.R;
-import com.example.joshmitchell.noteapp.SQLiteCursorLoader;
-
-import java.util.ArrayList;
 
 /**
  * Created by Josh Mitchell on 01/01/2018.

@@ -10,10 +10,10 @@
         />
 
     <item
-        android:id="@+id/checkbox"
+        android:id="@+id/Check"
         android:checkable="true"
-        android:title="Check"
-        />
+        android:title="Check"/>
+
 
     <item
         android:id="@+id/remove"
