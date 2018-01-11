@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import com.example.joshmitchell.noteapp.Activity.NoteActivity;
 import com.example.joshmitchell.noteapp.Activity.NoteListActivity;
+import com.example.joshmitchell.noteapp.Activity.ReminderActivity;
 import com.example.joshmitchell.noteapp.DB.NoteModel;
 import com.example.joshmitchell.noteapp.Model.Note;
 import com.example.joshmitchell.noteapp.R;
@@ -93,6 +94,22 @@ public class ViewNoteFragment extends Fragment {
                 NoteModel.get(getActivity()).updateNote(mNote);
                 updateMenuUI();
                 return true;
+
+            case R.id.send:
+                Intent sendIntent = new Intent(Intent.ACTION_SEND);
+                sendIntent.setType("text/plain");
+                sendIntent.putExtra(Intent.EXTRA_SUBJECT, mNote.getTitle());
+                sendIntent.putExtra(Intent.EXTRA_TEXT, mNote.getContent());
+                startActivity(sendIntent);
+
+                return true;
+
+            case R.id.reminder:
+                Intent reminderIntent = ReminderActivity.newIntent(getActivity(), mNote.getId());
+                startActivity(reminderIntent);
+
+                return true;
+
 
 
             default:

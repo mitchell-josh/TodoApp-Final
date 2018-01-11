@@ -10,4 +10,12 @@
     <string name="edit_note">Edit Note</string>
 
     <string name="delete_note">Delete Note</string>
+
+    <string-array name="repeater_array">
+        <item>Does not repeat</item>
+        <item>Every day</item>
+        <item>Every week</item>
+        <item>Every month</item>
+        <item>Every year</item>
+    </string-array>
 </resources>

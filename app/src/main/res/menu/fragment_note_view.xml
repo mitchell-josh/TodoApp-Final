@@ -20,4 +20,14 @@
         android:title="Remove"
         />
 
+    <item
+        android:id="@+id/send"
+        android:title="Send"
+        />
+
+    <item
+        android:id="@+id/reminder"
+        android:title="Reminder"
+        />
+
 </menu>
