@@ -6,7 +6,13 @@ import android.database.Cursor;
 import android.graphics.Paint;
 import android.icu.text.DateFormat;
 import android.os.Bundle;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.ListFragment;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.ActionMode;
 import android.view.ContextMenu;
@@ -18,6 +24,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.support.v4.app.LoaderManager;
@@ -41,6 +48,9 @@ public class NoteListFragment extends ListFragment implements LoaderManager.Load
     NoteCursorAdapter adapter;
 
     OnEditSelectedListener mCallback;
+
+    private DrawerLayout mDrawer;
+    private String[] arrayOfDrawerItems;
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args){
@@ -89,6 +99,9 @@ public class NoteListFragment extends ListFragment implements LoaderManager.Load
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
         View v = super.onCreateView(inflater, parent, savedInstanceState);
+
+        // Find our drawer view
+        mDrawer = (DrawerLayout) v.findViewById(R.id.drawer_layout);
 
         ListView listView = v.findViewById(android.R.id.list);
         listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
@@ -158,7 +171,12 @@ public class NoteListFragment extends ListFragment implements LoaderManager.Load
                 startActivityForResult(intent, REQUEST_NEW_NOTE);
                 return true;
 
-            default:
+            case android.R.id.home:
+                mDrawer.openDrawer(GravityCompat.START);
+
+                return true;
+
+                default:
                 return super.onOptionsItemSelected(item);
         }
     }

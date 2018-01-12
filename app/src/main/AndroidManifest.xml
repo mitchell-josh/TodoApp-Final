@@ -12,16 +12,13 @@
         <activity android:name=".Activity.NoteListActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Activity.NoteActivity"
-            android:label="@string/new_note_name">
-        </activity>
-        <activity android:name=".Activity.ReminderActivity"
-            android:label="Reminder">
-        </activity>
-        <receiver android:name=".Fragment.AlarmReceiver"/>
-
+        <activity
+            android:name=".Activity.NoteActivity"
+            android:label="@string/new_note_name"></activity>
     </application>
+
 </manifest>

@@ -12,12 +12,10 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.joshmitchell.noteapp.Activity.NoteActivity;
 import com.example.joshmitchell.noteapp.Activity.NoteListActivity;
-import com.example.joshmitchell.noteapp.Activity.ReminderActivity;
 import com.example.joshmitchell.noteapp.DB.NoteModel;
 import com.example.joshmitchell.noteapp.Model.Note;
 import com.example.joshmitchell.noteapp.R;
@@ -103,14 +101,6 @@ public class ViewNoteFragment extends Fragment {
                 startActivity(sendIntent);
 
                 return true;
-
-            case R.id.reminder:
-                Intent reminderIntent = ReminderActivity.newIntent(getActivity(), mNote.getId());
-                startActivity(reminderIntent);
-
-                return true;
-
-
 
             default:
                 return super.onOptionsItemSelected(item);
