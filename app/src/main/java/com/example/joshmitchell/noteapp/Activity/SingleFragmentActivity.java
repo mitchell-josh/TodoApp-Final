@@ -14,6 +14,8 @@ import android.view.MenuItem;
 
 import com.example.joshmitchell.noteapp.R;
 
+import static com.example.joshmitchell.noteapp.Activity.NoteListActivity.LIST_FILTER;
+
 /**
  * Created by Josh Mitchell on 27/12/2017.
  */
@@ -47,7 +49,10 @@ public abstract class SingleFragmentActivity extends AppCompatActivity {
                 startActivity(i);
                 break;
             case R.id.nav_second_fragment:
-                ;
+                Intent archivedIntent = new Intent(SingleFragmentActivity.this,
+                        NoteListActivity.class);
+                archivedIntent.putExtra(LIST_FILTER, 1);
+                startActivity(archivedIntent);
                 break;
             case R.id.nav_third_fragment:
                 ;

@@ -5,7 +5,9 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Paint;
 import android.icu.text.DateFormat;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ListFragment;
 import android.support.v4.view.GravityCompat;
@@ -25,6 +27,7 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.FilterQueryProvider;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.support.v4.app.LoaderManager;
@@ -45,16 +48,19 @@ import com.example.joshmitchell.noteapp.DB.Loaders.SQLiteCursorLoader;
 public class NoteListFragment extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final int REQUEST_NEW_NOTE = 0;
+    private static final String LIST_FILTER = "listFilter";
+
     NoteCursorAdapter adapter;
 
     OnEditSelectedListener mCallback;
 
     private DrawerLayout mDrawer;
-    private String[] arrayOfDrawerItems;
+    private String mCurFilter;
+    private int mListFilter;
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args){
-        return new NoteListCursorLoader(getActivity());
+        return new NoteListCursorLoader(getActivity(), mListFilter);
     }
 
     @Override
@@ -75,6 +81,17 @@ public class NoteListFragment extends ListFragment implements LoaderManager.Load
         public void onEditSelected(long noteId);
     }
 
+    public static NoteListFragment newInstance(int listFilter){
+        Bundle args = new Bundle();
+
+        args.putInt(LIST_FILTER, listFilter);
+
+        NoteListFragment fragment = new NoteListFragment();
+        fragment.setArguments(args);
+
+        return fragment;
+    }
+
     @Override
     public void onAttach(Context context){
         super.onAttach(context);
@@ -91,6 +108,13 @@ public class NoteListFragment extends ListFragment implements LoaderManager.Load
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mListFilter = -1;
+
+        Bundle args = getArguments();
+        if (args != null){
+            mListFilter = args.getInt(LIST_FILTER);
+        }
+
         getActivity().setTitle(R.string.notes_title);
         setHasOptionsMenu(true);
         getLoaderManager().initLoader(0, null, this);
@@ -235,13 +259,21 @@ public class NoteListFragment extends ListFragment implements LoaderManager.Load
 
     public static class NoteListCursorLoader extends SQLiteCursorLoader {
 
-        public NoteListCursorLoader(Context context){
+        private int filter;
+
+        public NoteListCursorLoader(Context context, int filter){
             super(context);
+            this.filter = filter;
         }
 
         @Override
         protected Cursor loadCursor() {
-            return NoteModel.get(getContext()).queryRuns();
+            if(filter == -1)
+                return NoteModel.get(getContext()).queryRuns();
+            if(filter == 1)
+                return NoteModel.get(getContext()).queryArchived();
+
+            return null;
         }
     }
 
@@ -268,7 +300,7 @@ public class NoteListFragment extends ListFragment implements LoaderManager.Load
             ListView listView = view.findViewById(android.R.id.list);
 
             TextView titleTextView = view.findViewById(R.id.note_list_item_titleTextView);
-            titleTextView.setText(t.getTitle() + " " + String.valueOf(t.getArchived()));
+            titleTextView.setText(t.getTitle() + " " + String.valueOf(t.getArchived()) + " " + String.valueOf(t.getSolved()));
 
             TextView dateTextView = view.findViewById(R.id.note_list_item_dateTextView);
             //Change date format for list

@@ -1,5 +1,7 @@
 package com.example.joshmitchell.noteapp.Activity;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -14,6 +16,13 @@ import com.example.joshmitchell.noteapp.Fragment.ViewPagerFragment;
 
 public class NoteListActivity extends SingleFragmentActivity implements NoteListFragment.OnEditSelectedListener {
 
+    public static final String LIST_FILTER = "todo_id";
+
+    public static Intent newIntent(Context packageContext, int listFilter) {
+        Intent intent = new Intent(packageContext, NoteActivity.class);
+        intent.putExtra(LIST_FILTER, listFilter);
+        return intent;
+    }
 
     public void onEditSelected(long noteId){
         //Do something here
@@ -31,6 +40,8 @@ public class NoteListActivity extends SingleFragmentActivity implements NoteList
 
     @Override
     protected Fragment createFragment() {
-        return new NoteListFragment();
+        int listFilter = getIntent().getIntExtra(LIST_FILTER, -1);
+
+        return NoteListFragment.newInstance(listFilter);
     }
 }

@@ -102,6 +102,10 @@ public class ViewNoteFragment extends Fragment {
 
                 return true;
 
+            case R.id.archived:
+                mNote.setSolved(1);
+                NoteModel.get(getActivity()).updateNote(mNote);
+
             default:
                 return super.onOptionsItemSelected(item);
 

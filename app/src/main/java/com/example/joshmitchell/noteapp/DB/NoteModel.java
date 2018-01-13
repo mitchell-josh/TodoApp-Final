@@ -70,6 +70,10 @@ public class NoteModel {
         return mHelper.queryNotes();
     }
 
+    public DatabaseHelper.NoteCursor queryArchived(){
+        return mHelper.queryArchived();
+    }
+
     public void removeNote(Note note){
         mHelper.removeNote(note);
     }

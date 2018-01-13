@@ -21,8 +21,8 @@ public class Note {
         return mCreatedDate;
     }
 
-    public void setCreatedDate(long date){
-        Date d = new Date(date);
+    public void setCreatedDate(long createdDate){
+        Date d = new Date(createdDate);
         mCreatedDate = d;
     }
 
@@ -36,9 +36,8 @@ public class Note {
     }
 
     public Note(){
-        // Generate text note
-        mDate = new Date();
         mId = -1;
+        mDate = new Date();
     }
 
     @Override

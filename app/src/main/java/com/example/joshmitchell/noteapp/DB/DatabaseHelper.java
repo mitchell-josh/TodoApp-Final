@@ -55,7 +55,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         cv.put(NOTE_CONTENT, note.getContent());
         cv.put(NOTE_CREATED_DATE, note.getDate().getTime());
         cv.put(NOTE_ARCHIVED, false);
-        cv.put(NOTE_SOLVED, note.getSolved());
+        cv.put(NOTE_SOLVED, false);
         return getWritableDatabase().insert(TABLE_NOTE, null, cv);
     }
 
@@ -64,7 +64,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         cv.put(NOTE_DATE, note.getDate().getTime());
         cv.put(NOTE_TITLE, note.getTitle());
         cv.put(NOTE_CONTENT, note.getContent());
-        cv.put(NOTE_CREATED_DATE, note.getDate().getTime());
+        cv.put(NOTE_CREATED_DATE, note.getCreatedDate().getTime());
         cv.put(NOTE_ARCHIVED, note.getArchived());
         cv.put(NOTE_SOLVED, note.getSolved());
         return getWritableDatabase().update(TABLE_NOTE, cv, "_id = ?",
@@ -78,7 +78,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public NoteCursor queryNotes(){
         Cursor wrapped = getReadableDatabase().query(TABLE_NOTE,
-                null, null, null, null, null, NOTE_DATE + " asc");
+                null, NOTE_SOLVED + " = ?", new String[] { "0" }, null, null, NOTE_DATE + " asc");
+        return new NoteCursor(wrapped);
+    }
+
+    public NoteCursor queryArchived(){
+        Cursor wrapped = getReadableDatabase().query(
+                TABLE_NOTE,
+                null,
+                NOTE_SOLVED + " = ?",
+                new String[] { "1" },
+                null,
+                null,
+                null
+        );
         return new NoteCursor(wrapped);
     }
 
@@ -106,9 +119,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             Note note = new Note();
             note.setId(getLong(getColumnIndex(NOTE_ID)));
             note.setDate(getLong(getColumnIndex(NOTE_DATE)));
+            note.setCreatedDate(getLong(getColumnIndex(NOTE_CREATED_DATE)));
             note.setTitle(getString(getColumnIndex(NOTE_TITLE)));
             note.setContent(getString(getColumnIndex(NOTE_CONTENT)));
             note.setArchived(getInt(getColumnIndex(NOTE_ARCHIVED)));
+            note.setSolved(getInt(getColumnIndex(NOTE_SOLVED)));
             //TODO Update these later
             return note;
         }
