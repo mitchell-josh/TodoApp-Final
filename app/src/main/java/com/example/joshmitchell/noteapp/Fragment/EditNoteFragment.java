@@ -23,7 +23,6 @@ import com.example.joshmitchell.noteapp.R;
 
 public class EditNoteFragment extends Fragment implements LoaderManager.LoaderCallbacks<Note>{
 
-    private NoteModel noteModel;
     private Note mNote;
     private EditText mTitleField, mContentField;
     private static final int LOAD_NOTE = 0;
@@ -61,7 +60,6 @@ public class EditNoteFragment extends Fragment implements LoaderManager.LoaderCa
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        noteModel = noteModel.get(getActivity());
 
         Bundle args = getArguments();
         Log.d("NoteID", String.valueOf(noteId));
@@ -127,9 +125,9 @@ public class EditNoteFragment extends Fragment implements LoaderManager.LoaderCa
     public void onPause(){
         super.onPause();
         if(noteId == -1) {
-            noteModel.addNote(mNote);
+            NoteModel.get(getActivity()).addNote(mNote);
         }else {
-            noteModel.updateNote(mNote);
+            NoteModel.get(getActivity()).updateNote(mNote);
         }
     }
 

@@ -3,18 +3,10 @@ package com.example.joshmitchell.noteapp.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Paint;
-import android.icu.text.DateFormat;
-import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.design.widget.NavigationView;
 import android.support.v4.app.ListFragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.ActionMode;
 import android.view.ContextMenu;
@@ -26,18 +18,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.FilterQueryProvider;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
-import android.support.v4.widget.CursorAdapter;
 
 import com.example.joshmitchell.noteapp.Activity.NoteActivity;
 import com.example.joshmitchell.noteapp.DB.DatabaseHelper;
+import com.example.joshmitchell.noteapp.DB.Loaders.NoteListCursorLoader;
 import com.example.joshmitchell.noteapp.DB.NoteModel;
 import com.example.joshmitchell.noteapp.Model.Note;
+import com.example.joshmitchell.noteapp.Adapter.NoteCursorAdapter;
 import com.example.joshmitchell.noteapp.R;
 import com.example.joshmitchell.noteapp.DB.Loaders.SQLiteCursorLoader;
 
@@ -50,12 +40,11 @@ public class NoteListFragment extends ListFragment implements LoaderManager.Load
     private static final int REQUEST_NEW_NOTE = 0;
     private static final String LIST_FILTER = "listFilter";
 
-    NoteCursorAdapter adapter;
+    NoteCursorAdapter mAdapter;
 
     OnEditSelectedListener mCallback;
 
     private DrawerLayout mDrawer;
-    private String mCurFilter;
     private int mListFilter;
 
     @Override
@@ -66,10 +55,10 @@ public class NoteListFragment extends ListFragment implements LoaderManager.Load
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor){
         Log.d("NoteListFragment", "Load Finished");
-        adapter = new NoteCursorAdapter(getActivity(),
+        mAdapter = new NoteCursorAdapter(getActivity(),
                 (DatabaseHelper.NoteCursor) cursor);
-        adapter.swapCursor(cursor);
-        setListAdapter(adapter);
+        mAdapter.swapCursor(cursor);
+        setListAdapter(mAdapter);
     }
 
     @Override
@@ -216,7 +205,7 @@ public class NoteListFragment extends ListFragment implements LoaderManager.Load
                 item.getMenuInfo();
         NoteCursorAdapter adapter = (NoteCursorAdapter) getListAdapter();
         int itemPos = info.position;
-        adapter.mNoteCursor.moveToPosition(itemPos);
+        mAdapter.mNoteCursor.moveToPosition(itemPos);
         Note t = adapter.mNoteCursor.getNote();
 
         switch (item.getItemId()) {
@@ -234,7 +223,7 @@ public class NoteListFragment extends ListFragment implements LoaderManager.Load
     public void onActivityResult(int requestCode, int ResultCode, Intent data){
         Log.d("EditNoteFragment", "Request new Note called");
         if (REQUEST_NEW_NOTE == requestCode){
-            adapter.notifyDataSetChanged();
+            mAdapter.notifyDataSetChanged();
             getLoaderManager().restartLoader(0, null, this);
         }
     }
@@ -244,9 +233,9 @@ public class NoteListFragment extends ListFragment implements LoaderManager.Load
         super.onResume();
         Log.d("NoteListFragment", "onResume Called");
         getLoaderManager().restartLoader(0, null, this);
-        if(adapter != null) {
+        if(mAdapter != null) {
             Log.d("NoteListFragment", "Adapter is not null");
-            adapter.notifyDataSetChanged();
+            mAdapter.notifyDataSetChanged();
         }
     }
 
@@ -255,69 +244,5 @@ public class NoteListFragment extends ListFragment implements LoaderManager.Load
         //Start NoteActivity
         Log.d("ViewNoteFragment", "NoteListFrag" + String.valueOf(id));
         mCallback.onEditSelected(id);
-    }
-
-    public static class NoteListCursorLoader extends SQLiteCursorLoader {
-
-        private int filter;
-
-        public NoteListCursorLoader(Context context, int filter){
-            super(context);
-            this.filter = filter;
-        }
-
-        @Override
-        protected Cursor loadCursor() {
-            if(filter == -1)
-                return NoteModel.get(getContext()).queryRuns();
-            if(filter == 1)
-                return NoteModel.get(getContext()).queryArchived();
-
-            return null;
-        }
-    }
-
-    private static class NoteCursorAdapter extends CursorAdapter {
-
-        private DatabaseHelper.NoteCursor  mNoteCursor;
-
-        public NoteCursorAdapter(Context context, DatabaseHelper.NoteCursor cursor){
-            super(context, cursor, 0);
-            mNoteCursor = cursor;
-        }
-
-        @Override
-        public View newView(Context context, Cursor cursor, ViewGroup parent){
-            LayoutInflater inflater = (LayoutInflater) context
-                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            return inflater.inflate(R.layout.list_item_note, parent, false);
-        }
-
-        @Override
-        public void bindView(View view, Context context, Cursor cursor){
-            Note t = mNoteCursor.getNote();
-
-            ListView listView = view.findViewById(android.R.id.list);
-
-            TextView titleTextView = view.findViewById(R.id.note_list_item_titleTextView);
-            titleTextView.setText(t.getTitle() + " " + String.valueOf(t.getArchived()) + " " + String.valueOf(t.getSolved()));
-
-            TextView dateTextView = view.findViewById(R.id.note_list_item_dateTextView);
-            //Change date format for list
-            String stringDate = DateFormat.getPatternInstance(DateFormat.ABBR_MONTH_DAY)
-                    .format(t.getDate());
-            dateTextView.setText(stringDate);
-
-            Log.d("NoteListFragment", String.valueOf(t.getArchived()));
-
-            //Strike through if item is checked
-            if (t.getArchived() == 1){
-                titleTextView.setPaintFlags(titleTextView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-                dateTextView.setPaintFlags(dateTextView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-            }else {
-                titleTextView.setPaintFlags(titleTextView.getPaintFlags() & (~ Paint.STRIKE_THRU_TEXT_FLAG));
-                dateTextView.setPaintFlags(titleTextView.getPaintFlags() & (~ Paint.STRIKE_THRU_TEXT_FLAG));
-            }
-        }
     }
 }
