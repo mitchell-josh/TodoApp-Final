@@ -9,12 +9,6 @@
             android:title="Archived" />
         <item
             android:id="@+id/nav_third_fragment"
-            android:title="Deleted" />
-        <item
-            android:id="@+id/nav_fourth_fragment"
             android:title="Settings" />
-        <item
-            android:id="@+id/nav_fifth_fragment"
-            android:title="Search" />
     </group>
 </menu>

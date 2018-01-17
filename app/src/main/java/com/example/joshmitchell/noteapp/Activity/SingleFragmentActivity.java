@@ -9,9 +9,12 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
+import com.example.joshmitchell.noteapp.Fragment.SettingsFragment;
 import com.example.joshmitchell.noteapp.R;
 
 import static com.example.joshmitchell.noteapp.Activity.NoteListActivity.LIST_FILTER;
@@ -25,6 +28,7 @@ public abstract class SingleFragmentActivity extends AppCompatActivity {
     protected abstract Fragment createFragment();
 
     private NavigationView nvDrawer;
+    private DrawerLayout mDrawerLayout;
 
     private void setupDrawerContent(NavigationView navigationView){
         navigationView.setNavigationItemSelectedListener(
@@ -55,7 +59,12 @@ public abstract class SingleFragmentActivity extends AppCompatActivity {
                 startActivity(archivedIntent);
                 break;
             case R.id.nav_third_fragment:
-                ;
+                mDrawerLayout.closeDrawers();
+                SettingsFragment settingsFragment = new SettingsFragment();
+                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                transaction.replace(R.id.fragmentContainer, settingsFragment);
+                transaction.addToBackStack(null);
+                transaction.commit();
                 break;
             default:
                 ;
@@ -70,6 +79,8 @@ public abstract class SingleFragmentActivity extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fragment);
+
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
         nvDrawer = (NavigationView) findViewById(R.id.nvView);
         setupDrawerContent(nvDrawer);

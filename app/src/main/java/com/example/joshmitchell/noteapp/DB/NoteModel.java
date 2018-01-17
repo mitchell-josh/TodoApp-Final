@@ -30,8 +30,6 @@ public class NoteModel {
         mHelper = new DatabaseHelper(mAppContext);
         mPrefs = mAppContext.getSharedPreferences(PREFS_FILE, Context.MODE_PRIVATE);
         mCurrentNoteId = mPrefs.getLong(PREF_CURRENT_NOTE_ID, -1);
-
-
     }
 
     public static NoteModel get(Context c){
@@ -80,5 +78,9 @@ public class NoteModel {
 
     public void updateNote(Note note){
         mHelper.updateNote(note);
+    }
+
+    public void deleteAll(){
+        mHelper.deleteAll();
     }
 }
