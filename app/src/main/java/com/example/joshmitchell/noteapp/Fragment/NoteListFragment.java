@@ -48,40 +48,6 @@ public class NoteListFragment extends ListFragment implements LoaderManager.Load
     private int mListFilter;
 
     @Override
-    public Loader<Cursor> onCreateLoader(int id, Bundle args){
-        return new NoteListCursorLoader(getActivity(), mListFilter);
-    }
-
-    @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor cursor){
-        Log.d("NoteListFragment", "Load Finished");
-        mAdapter = new NoteCursorAdapter(getActivity(),
-                (DatabaseHelper.NoteCursor) cursor);
-        mAdapter.swapCursor(cursor);
-        setListAdapter(mAdapter);
-    }
-
-    @Override
-    public void onLoaderReset(Loader<Cursor> loader){
-        setListAdapter(null);
-    }
-
-    public interface OnEditSelectedListener {
-        public void onEditSelected(long noteId);
-    }
-
-    public static NoteListFragment newInstance(int listFilter){
-        Bundle args = new Bundle();
-
-        args.putInt(LIST_FILTER, listFilter);
-
-        NoteListFragment fragment = new NoteListFragment();
-        fragment.setArguments(args);
-
-        return fragment;
-    }
-
-    @Override
     public void onAttach(Context context){
         super.onAttach(context);
 
@@ -107,6 +73,14 @@ public class NoteListFragment extends ListFragment implements LoaderManager.Load
         getActivity().setTitle(R.string.notes_title);
         setHasOptionsMenu(true);
         getLoaderManager().initLoader(0, null, this);
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        restartLoader();
+        if(mAdapter != null)
+            mAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -166,10 +140,6 @@ public class NoteListFragment extends ListFragment implements LoaderManager.Load
         return v;
 
     }
-
-    private void restartLoader(){
-        getLoaderManager().restartLoader(0, null, this);
-    }
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater){
         super.onCreateOptionsMenu(menu, inflater);
@@ -213,7 +183,7 @@ public class NoteListFragment extends ListFragment implements LoaderManager.Load
                 Log.d("NoteListFragment", "Delete Note");
                 NoteModel.get(getActivity()).removeNote(t);
                 adapter.notifyDataSetChanged();
-                getLoaderManager().restartLoader(0, null, this);
+                restartLoader();
                 return true;
         }
         return super.onContextItemSelected(item);
@@ -224,18 +194,7 @@ public class NoteListFragment extends ListFragment implements LoaderManager.Load
         Log.d("EditNoteFragment", "Request new Note called");
         if (REQUEST_NEW_NOTE == requestCode){
             mAdapter.notifyDataSetChanged();
-            getLoaderManager().restartLoader(0, null, this);
-        }
-    }
-
-    @Override
-    public void onResume(){
-        super.onResume();
-        Log.d("NoteListFragment", "onResume Called");
-        getLoaderManager().restartLoader(0, null, this);
-        if(mAdapter != null) {
-            Log.d("NoteListFragment", "Adapter is not null");
-            mAdapter.notifyDataSetChanged();
+            restartLoader();
         }
     }
 
@@ -244,5 +203,44 @@ public class NoteListFragment extends ListFragment implements LoaderManager.Load
         //Start NoteActivity
         Log.d("ViewNoteFragment", "NoteListFrag" + String.valueOf(id));
         mCallback.onEditSelected(id);
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args){
+        return new NoteListCursorLoader(getActivity(), mListFilter);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor cursor){
+        Log.d("NoteListFragment", "Load Finished");
+        mAdapter = new NoteCursorAdapter(getActivity(),
+                (DatabaseHelper.NoteCursor) cursor);
+        mAdapter.swapCursor(cursor);
+        setListAdapter(mAdapter);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader){
+        setListAdapter(null);
+    }
+
+    public interface OnEditSelectedListener {
+        public void onEditSelected(long noteId);
+    }
+
+    public static NoteListFragment newInstance(int listFilter){
+        Bundle args = new Bundle();
+
+        args.putInt(LIST_FILTER, listFilter);
+
+        NoteListFragment fragment = new NoteListFragment();
+        fragment.setArguments(args);
+
+        return fragment;
+    }
+
+
+    private void restartLoader(){
+        getLoaderManager().restartLoader(0, null, this);
     }
 }
