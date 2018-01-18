@@ -38,18 +38,6 @@ public class NoteModel {
         }
         return sNoteModel;
     }
-
-    public ArrayList<Note> getTextNotes() {
-        DatabaseHelper.NoteCursor cursor = mHelper.queryNotes();
-        cursor.moveToFirst();
-        while(!cursor.isAfterLast()){
-            mNotes.add(cursor.getNote());
-            cursor.moveToNext();
-        }
-        cursor.close();
-        return mNotes;
-    }
-
     public Note getTextNote(long id){
         Note note = null;
         DatabaseHelper.NoteCursor cursor = mHelper.queryNote(id);
@@ -64,7 +52,7 @@ public class NoteModel {
         mHelper.insertNote(note);
     }
 
-    public DatabaseHelper.NoteCursor queryRuns(){
+    public DatabaseHelper.NoteCursor queryNotes(){
         return mHelper.queryNotes();
     }
 

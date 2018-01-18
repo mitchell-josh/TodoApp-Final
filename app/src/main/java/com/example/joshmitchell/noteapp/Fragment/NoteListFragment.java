@@ -42,7 +42,7 @@ public class NoteListFragment extends ListFragment implements LoaderManager.Load
 
     NoteCursorAdapter mAdapter;
 
-    OnEditSelectedListener mCallback;
+    OnViewSelectedListener mCallback;
 
     private DrawerLayout mDrawer;
     private int mListFilter;
@@ -52,10 +52,10 @@ public class NoteListFragment extends ListFragment implements LoaderManager.Load
         super.onAttach(context);
 
         try {
-            mCallback = (OnEditSelectedListener) context;
+            mCallback = (OnViewSelectedListener) context;
         } catch (ClassCastException e){
             throw new ClassCastException(context.toString()
-                    + "must implement onEditSelectedListener");
+                    + "must implement onViewSelectedListener");
         }
 
     }
@@ -201,8 +201,7 @@ public class NoteListFragment extends ListFragment implements LoaderManager.Load
     @Override
     public void onListItemClick(ListView l, View v, int position, long id){
         //Start NoteActivity
-        Log.d("ViewNoteFragment", "NoteListFrag" + String.valueOf(id));
-        mCallback.onEditSelected(id);
+        mCallback.onViewSelected(id);
     }
 
     @Override
@@ -212,7 +211,6 @@ public class NoteListFragment extends ListFragment implements LoaderManager.Load
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor){
-        Log.d("NoteListFragment", "Load Finished");
         mAdapter = new NoteCursorAdapter(getActivity(),
                 (DatabaseHelper.NoteCursor) cursor);
         mAdapter.swapCursor(cursor);
@@ -224,8 +222,8 @@ public class NoteListFragment extends ListFragment implements LoaderManager.Load
         setListAdapter(null);
     }
 
-    public interface OnEditSelectedListener {
-        public void onEditSelected(long noteId);
+    public interface OnViewSelectedListener {
+        public void onViewSelected(long noteId);
     }
 
     public static NoteListFragment newInstance(int listFilter){

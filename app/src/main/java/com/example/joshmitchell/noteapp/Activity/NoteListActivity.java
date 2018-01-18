@@ -14,7 +14,7 @@ import com.example.joshmitchell.noteapp.Fragment.ViewPagerFragment;
  * Created by Josh Mitchell on 27/12/2017.
  */
 
-public class NoteListActivity extends SingleFragmentActivity implements NoteListFragment.OnEditSelectedListener {
+public class NoteListActivity extends SingleFragmentActivity implements NoteListFragment.OnViewSelectedListener {
 
     public static final String LIST_FILTER = "todo_id";
 
@@ -24,7 +24,7 @@ public class NoteListActivity extends SingleFragmentActivity implements NoteList
         return intent;
     }
 
-    public void onEditSelected(long noteId){
+    public void onViewSelected(long noteId){
         //Do something here
         ViewPagerFragment fragment = new ViewPagerFragment();
         Bundle args = new Bundle();

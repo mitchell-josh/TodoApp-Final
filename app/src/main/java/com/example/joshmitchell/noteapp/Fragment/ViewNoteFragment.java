@@ -62,7 +62,6 @@ public class ViewNoteFragment extends Fragment {
         this.menu = menu;
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.fragment_note_view, menu);
-        Log.d("ViewNoteFragment", "onCreateOptionsMenu");
         updateMenuUI();
     }
 
@@ -150,7 +149,6 @@ public class ViewNoteFragment extends Fragment {
     }
 
     private void updateMenuUI(){
-        Log.d("ViewNoteFragment", "updateMenuUI");
         if(mNote.getArchived() == 1) {
             menu.findItem(R.id.Check).setChecked(true).setTitle("Uncheck");
         }else {

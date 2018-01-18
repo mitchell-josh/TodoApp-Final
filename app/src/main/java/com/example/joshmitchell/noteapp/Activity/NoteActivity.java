@@ -21,14 +21,11 @@ public class NoteActivity extends SingleFragmentActivity {
     protected Fragment createFragment() {
         long Id = getIntent()
                 .getLongExtra(EXTRA_NOTE_ID, -1);
-        Log.d("NoteActivity", String.valueOf(Id));
 
         if ( Id != -1){
-            Log.d("NoteActivity", "Existing Note");
             return EditNoteFragment.newInstance(Id);
         }
         else{
-            Log.d("NoteActivity", "New Note");
             return new EditNoteFragment();
         }
     }

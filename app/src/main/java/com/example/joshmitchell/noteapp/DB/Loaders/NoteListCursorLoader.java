@@ -21,7 +21,7 @@ public class NoteListCursorLoader extends SQLiteCursorLoader {
     @Override
     protected Cursor loadCursor() {
         if(filter == -1)
-            return NoteModel.get(getContext()).queryRuns();
+            return NoteModel.get(getContext()).queryNotes();
         if(filter == 1)
             return NoteModel.get(getContext()).queryArchived();
 
